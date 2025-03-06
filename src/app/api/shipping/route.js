@@ -9,7 +9,7 @@ export async function GET(req) {
   try {
     await connectDB() // اتصال به دیتابیس
 
-    const shippingData = await Shipping.findOne()
+    const shippingData = await Shipping.findOne().lean()
 
     if (!shippingData) {
       return new Response(JSON.stringify({ shippingCost: 50000 }), {

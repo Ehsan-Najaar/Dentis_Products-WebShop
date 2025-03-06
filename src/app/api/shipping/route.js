@@ -5,7 +5,7 @@ import connectDB from '../../../../lib/db'
 import Shipping from '../../../../models/Shipping'
 
 // دریافت هزینه ارسال
-export async function GET(req) {
+export async function getServerSideProps() {
   try {
     await connectDB() // اتصال به دیتابیس
 

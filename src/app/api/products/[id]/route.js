@@ -1,0 +1,106 @@
+import { NextResponse } from 'next/server'
+import slugify from 'slugify' // حتماً نصب شود
+import connectDB from '../../../../../lib/db'
+import Product from '../../../../../models/Product'
+
+// 📌 دریافت یک محصول بر اساس ID و افزایش بازدید
+export async function GET(req, { params }) {
+  try {
+    await connectDB()
+    const { id } = params
+
+    // پیدا کردن محصول و افزایش `views` همزمان
+    const product = await Product.findByIdAndUpdate(
+      id,
+      { $inc: { views: 1 } },
+      { new: true }
+    )
+
+    if (!product) {
+      return NextResponse.json({ message: 'محصول پیدا نشد' }, { status: 404 })
+    }
+
+    return NextResponse.json(product, { status: 200 })
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'خطا در دریافت محصول', error: error.message },
+      { status: 500 }
+    )
+  }
+}
+
+// 📌 حذف یک محصول بر اساس ID
+export async function DELETE(req, { params }) {
+  try {
+    await connectDB()
+    const { id } = params
+
+    const deletedProduct = await Product.findByIdAndDelete(id)
+    if (!deletedProduct) {
+      return NextResponse.json({ message: 'محصول پیدا نشد' }, { status: 404 })
+    }
+
+    return NextResponse.json(
+      { message: 'محصول با موفقیت حذف شد', productId: id },
+      { status: 200 }
+    )
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'خطا در حذف محصول', error: error.message },
+      { status: 500 }
+    )
+  }
+}
+
+// 📌 ویرایش اطلاعات یک محصول بر اساس ID
+export async function PUT(request, { params }) {
+  await connectDB()
+
+  const { id } = params
+  const updateData = await request.json()
+
+  try {
+    // دریافت محصول قدیمی
+    const existingProduct = await Product.findById(id)
+    if (!existingProduct) {
+      return NextResponse.json({ message: 'محصول پیدا نشد' }, { status: 404 })
+    }
+
+    // تولید `slug` جدید فقط در صورتی که `name` تغییر کند
+    if (updateData.name && updateData.name !== existingProduct.name) {
+      let newSlug = slugify(updateData.name, {
+        lower: true,
+        strict: true,
+        replacement: '-',
+        locale: 'fa',
+      })
+
+      // بررسی یکتا بودن `slug`
+      let slugExists = await Product.findOne({
+        slug: newSlug,
+        _id: { $ne: id },
+      })
+      let count = 1
+
+      while (slugExists) {
+        newSlug = `${newSlug}-${count}`
+        slugExists = await Product.findOne({ slug: newSlug, _id: { $ne: id } })
+        count++
+      }
+
+      updateData.slug = newSlug
+    }
+
+    // به‌روزرسانی محصول
+    const updatedProduct = await Product.findByIdAndUpdate(id, updateData, {
+      new: true,
+    })
+
+    return NextResponse.json(updatedProduct, { status: 200 })
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'خطا در ویرایش محصول', error: error.message },
+      { status: 500 }
+    )
+  }
+}

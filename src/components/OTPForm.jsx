@@ -1,0 +1,87 @@
+import { useState } from 'react'
+
+const OTPForm = ({ email, setStep, flowType }) => {
+  const [otp, setOtp] = useState('')
+  const [loadingSend, setLoadingSend] = useState(false)
+  const [loadingVerify, setLoadingVerify] = useState(false)
+  const [error, setError] = useState('')
+
+  const handleSendOtp = async () => {
+    setLoadingSend(true)
+    setError('')
+
+    try {
+      const response = await fetch('/api/auth/send-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      })
+
+      if (!response.ok) throw new Error('مشکلی در ارسال کد تأیید پیش آمده است')
+
+      alert('کد تأیید به ایمیل شما ارسال شد!')
+    } catch (error) {
+      setError(error.message || 'مشکلی پیش آمده است')
+    }
+
+    setLoadingSend(false)
+  }
+
+  const handleVerify = async () => {
+    setLoadingVerify(true)
+    setError('')
+
+    try {
+      const response = await fetch('/api/auth/verify-otp', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, otp }),
+      })
+
+      if (!response.ok) throw new Error('کد اشتباه است')
+
+      // بررسی کنیم که کاربر برای چه هدفی وارد شده
+      if (flowType === 'forgotPassword') {
+        setStep('reset-password') // اگر فراموشی رمز بود، به مرحله تغییر رمز برود
+      } else {
+        setStep('signup') // اگر ثبت‌نام بود، به مرحله ثبت‌نام برود
+      }
+    } catch (error) {
+      setError(error.message || 'مشکلی در تایید کد پیش آمده است')
+    }
+
+    setLoadingVerify(false)
+  }
+
+  return (
+    <div className="space-y-4">
+      <h2 className="h3 text-center">ورود با کد تأیید ایمیل</h2>
+      <div className="flex items-center justify-between bg-bg rounded-lg">
+        <input
+          type="text"
+          placeholder="کد تأیید"
+          value={otp}
+          onChange={(e) => setOtp(e.target.value)}
+          className="input"
+        />
+        <button
+          onClick={handleSendOtp}
+          disabled={loadingSend}
+          className="bg-dark rounded-lg text-light text-sm whitespace-nowrap p-5"
+        >
+          {loadingSend ? 'در حال ارسال...' : 'ارسال کد تایید'}
+        </button>
+      </div>
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+      <button
+        onClick={handleVerify}
+        disabled={loadingVerify}
+        className="w-full btn-primary"
+      >
+        {loadingVerify ? 'در حال بررسی...' : 'تایید کد'}
+      </button>
+    </div>
+  )
+}
+
+export default OTPForm

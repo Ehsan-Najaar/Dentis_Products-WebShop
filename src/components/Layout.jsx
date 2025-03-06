@@ -1,0 +1,30 @@
+'use client'
+
+import Footer from '@/components/Footer'
+import Header from '@/components/Header'
+import { SessionProvider } from 'next-auth/react'
+import { usePathname } from 'next/navigation'
+import { AppProvider } from '../../context/AppContext'
+
+export default function Layout({ children }) {
+  const pathname = usePathname()
+  const isAdminPage = pathname.startsWith('/admin')
+  const isCheckoutPage = pathname.startsWith('/checkout')
+
+  return (
+    <SessionProvider>
+      <AppProvider>
+        <main className="space-y-12">
+          {/* اگر در مسیر "/admin" هستیم، هدر نمایش داده نشود */}
+          {!(isAdminPage || isCheckoutPage) && <Header />}
+
+          {/* نمایش محتوا صفحات دیگر */}
+          {children}
+
+          {/* فوتر */}
+          {!isAdminPage && <Footer />}
+        </main>
+      </AppProvider>
+    </SessionProvider>
+  )
+}

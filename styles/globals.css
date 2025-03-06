@@ -1,0 +1,131 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import '../public/fonts/IRANSans.css';
+
+*,
+body {
+  font-family: 'IRANSans';
+}
+
+:root {
+  --bg: #e8e8e8;
+  --primary: #5b52a3;
+  --light: #ffffff;
+  --dark: #333333;
+  --accent: #d3cff2;
+  --lightGray: #dddddd;
+}
+
+@layer components {
+  /* دکمه‌ها */
+  .btn-primary {
+    @apply flex items-center justify-center gap-2 bg-primary text-light text-center py-2 px-4 rounded hover:bg-opacity-90 transition-all duration-200;
+  }
+
+  .btn-outline {
+    @apply border border-primary text-primary py-2 px-4 rounded hover:bg-primary hover:text-light transition-all duration-200;
+  }
+
+  /* اینپوت‌ها */
+  .input {
+    @apply w-full p-4 rounded-lg bg-bg focus:outline-none  focus:border-dark focus:ring-1 focus:ring-dark;
+  }
+
+  .h1 {
+    @apply text-[40px] font-bold;
+  }
+
+  .h2 {
+    @apply text-[32px] font-semibold;
+  }
+
+  .h3 {
+    @apply text-[20px] font-medium;
+  }
+
+  .body-text {
+    @apply text-[16px] font-medium;
+  }
+
+  .small-text {
+    @apply text-[12px] font-medium text-gray-500;
+  }
+
+  .btn-text {
+    @apply text-[16px] font-semibold;
+  }
+}
+
+/* استایل چک‌باکس سفارشی */
+input[type='checkbox'] {
+  width: 20px;
+  height: 20px;
+  appearance: none;
+  background-color: #fff;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+input[type='checkbox']:checked {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+input[type='checkbox']:checked::after {
+  content: '';
+  position: absolute;
+  top: 2px;
+  left: 6px;
+  width: 6px;
+  height: 10px;
+  border: solid white;
+  border-width: 0 3px 3px 0;
+  transform: rotate(45deg);
+}
+
+select {
+  appearance: none;
+  background: url('/icons/chevron(0).png') no-repeat left 10px center;
+  background-size: 16px;
+  padding-left: 30px;
+  color: #9ca3af;
+}
+
+select:focus,
+select:valid {
+  color: var(--dark);
+}
+
+option[value=''] {
+  color: #9ca3af !important;
+}
+
+/* سفارشی کردن دکمه‌های پجینیشن */
+.swiper-pagination-bullet {
+  width: 10px !important; /* عرض دکمه */
+  height: 10px !important; /* ارتفاع دکمه */
+  background-color: #d1d5db !important; /* رنگ پیش‌فرض */
+  border-radius: 50% !important; /* دایره‌ای کردن دکمه */
+  opacity: 1 !important; /* اطمینان از قابل مشاهده بودن */
+  transition: background-color 0.3s ease !important; /* افکت تغییر رنگ */
+}
+
+.swiper-pagination-bullet-active {
+  background-color: var(--primary) !important; /* رنگ برای دکمه فعال */
+  transform: scale(1.2) !important; /* بزرگ‌تر کردن دکمه فعال */
+}
+
+/* موقعیت پجینیشن */
+.swiper-pagination {
+  width: max-content !important;
+  bottom: 10px !important; /* فاصله از پایین */
+  left: 2px !important;
+  display: flex !important;
+  justify-content: center !important; /* مرکز قرار دادن */
+  gap: 2px !important; /* فاصله بین دکمه‌ها */
+}

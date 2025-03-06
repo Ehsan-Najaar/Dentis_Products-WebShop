@@ -6,17 +6,16 @@ import { useEffect, useState } from 'react'
 // تابع برای فرمت‌دهی قیمت
 const formatCurrency = (value) => {
   if (!value) return ''
-  // تبدیل به عدد و سپس فرمت‌دهی به کاما
   return Number(value).toLocaleString()
 }
 
-// تابع برای پاک کردن کاماها و فقط نگه داشتن اعداد
+// تابع برای حذف کاماها و نگه‌داشتن فقط اعداد
 const removeCommas = (value) => {
   return value.replace(/,/g, '')
 }
 
 function AdminShipping() {
-  const [shippingCost, setShippingCost] = useState(0)
+  const [shippingCost, setShippingCost] = useState('')
   const [formData, setFormData] = useState({ shippingCost: '' })
 
   // دریافت هزینه ارسال از API
@@ -24,10 +23,10 @@ function AdminShipping() {
     try {
       const res = await fetch('/api/shipping')
       const data = await res.json()
-      // اگر هزینه ارسال موجود باشد
       if (data.shippingCost) {
-        setShippingCost(data.shippingCost)
-        setFormData({ shippingCost: formatCurrency(data.shippingCost) }) // فرمت‌دهی قیمت
+        const formattedCost = formatCurrency(data.shippingCost)
+        setShippingCost(formattedCost)
+        setFormData({ shippingCost: formattedCost })
       }
     } catch (error) {
       console.error('Error fetching shipping cost:', error)
@@ -36,19 +35,26 @@ function AdminShipping() {
 
   // تغییر هزینه ارسال
   const updateShippingCost = async () => {
-    const numericValue = removeCommas(formData.shippingCost) // حذف کاماها برای ارسال به سرور
+    const numericValue = Number(removeCommas(formData.shippingCost)) // تبدیل به عدد
+    if (isNaN(numericValue) || numericValue < 0) {
+      alert('لطفاً مقدار معتبر وارد کنید!')
+      return
+    }
+
     const res = await fetch('/api/shipping', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ shippingCost: numericValue }),
     })
+
     if (res.ok) {
       alert('هزینه ارسال با موفقیت ویرایش شد!')
+      fetchShippingCost() // مقدار جدید را دریافت کن
     }
   }
 
   useEffect(() => {
-    fetchShippingCost() // زمانی که کامپوننت بارگذاری می‌شود، هزینه ارسال را دریافت می‌کنیم
+    fetchShippingCost()
   }, [])
 
   // کنترل تغییرات در فرم
@@ -56,22 +62,16 @@ function AdminShipping() {
     const { name, value } = e.target
 
     if (name === 'shippingCost') {
-      let numericValue = removeCommas(value) // فقط اعداد را بپذیرید
+      let numericValue = removeCommas(value)
 
-      // اگر عدد وارد شده خالی نباشد
-      if (numericValue) {
-        // فرمت‌دهی به قیمت
-        const formattedValue = formatCurrency(numericValue)
-        setFormData({
-          ...formData,
-          [name]: formattedValue, // به روزرسانی فرم‌دیتا با فرمت جدید
-        })
-      } else {
-        setFormData({
-          ...formData,
-          [name]: '',
-        })
-      }
+      // فقط اعداد را بپذیرد
+      if (!/^\d*$/.test(numericValue)) return
+
+      const formattedValue = numericValue ? formatCurrency(numericValue) : ''
+      setFormData({
+        ...formData,
+        [name]: formattedValue,
+      })
     }
   }
 
@@ -86,8 +86,8 @@ function AdminShipping() {
           <input
             name="shippingCost"
             placeholder="قیمت"
-            value={formData.shippingCost} // اینجا مقدار shippingCost از state گرفته می‌شود
-            onChange={handleChange} // هر بار که ورودی تغییر کند، فرمت جدید اعمال می‌شود
+            value={formData.shippingCost}
+            onChange={handleChange}
             className="bg-transparent focus:outline-none"
           />
           <span className="ml-2 text-gray-400">تومان</span>

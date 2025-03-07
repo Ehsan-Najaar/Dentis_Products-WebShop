@@ -98,7 +98,7 @@ const ProductCard1 = ({ product }) => {
             {/* اگر بارگذاری سبد خرید یا بارگذاری در حال انجام است، آیکون سبد خرید را نمایش می‌دهیم */}
             {cartLoading || loading ? (
               <Image
-                src="/icons/bag.png"
+                src="/icons/Bag.png"
                 alt="افزودن به سبد خرید"
                 width={24}
                 height={24}
@@ -108,7 +108,7 @@ const ProductCard1 = ({ product }) => {
               <FiCheckCircle size={24} className="text-primary" /> // آیکون تیک
             ) : (
               <Image
-                src="/icons/bag.png"
+                src="/icons/Bag.png"
                 alt="افزودن به سبد خرید"
                 width={24}
                 height={24}

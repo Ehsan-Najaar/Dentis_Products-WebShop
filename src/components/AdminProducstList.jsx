@@ -9,6 +9,7 @@ export default function AdminProductsList({ products, onDelete }) {
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
 
+  // get categories
   useEffect(() => {
     const fetchCategories = async () => {
       try {

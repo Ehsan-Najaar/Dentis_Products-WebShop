@@ -31,9 +31,7 @@ export default function EditProductPage() {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/categories`
-        )
+        const res = await fetch(`/api/categories`)
         if (!res.ok) throw new Error('Error fetching categories')
 
         const data = await res.json()
@@ -46,9 +44,7 @@ export default function EditProductPage() {
     const fetchProduct = async () => {
       try {
         console.log('Fetching product with ID:', productId) // بررسی مقدار productId
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/products/${productId}`
-        )
+        const res = await fetch(`/api/products/${productId}`)
 
         const text = await res.text() // دریافت به صورت متن
 
@@ -313,14 +309,11 @@ export default function EditProductPage() {
 
       console.log('Final product data before PUT request:', productData)
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/products/${productId}`,
-        {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(productData),
-        }
-      )
+      const res = await fetch(`/api/products/${productId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(productData),
+      })
 
       if (!res.ok) {
         const errorData = await res.json()

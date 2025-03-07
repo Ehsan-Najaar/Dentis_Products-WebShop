@@ -1,13 +1,17 @@
 'use client'
 
+import AuthModal from '@/components/AuthModal'
 import ProductDetails from '@/components/ProductDetails'
 import RelatedProducts from '@/components/RelatedProducts'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { FiLoader } from 'react-icons/fi'
+import { useAppContext } from '../../../../context/AppContext'
 import { toSlug } from '../../../../utils/slugify'
 
 export default function SingleProductPage() {
+  const { isLoggedIn } = useAppContext()
+
   const pathname = usePathname()
   const slug = decodeURIComponent(pathname.split('/').pop())
 
@@ -16,6 +20,7 @@ export default function SingleProductPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
   const [inCart, setInCart] = useState(false)
+  const [isAuthModalOpen, setAuthModalOpen] = useState(false)
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -28,7 +33,6 @@ export default function SingleProductPage() {
         }
 
         const allProducts = await res.json()
-
         const generateProductSlug = (product) =>
           toSlug(`${product.name} ${product.brand}`)
 
@@ -60,6 +64,11 @@ export default function SingleProductPage() {
   }, [slug])
 
   const addToCart = async (quantity) => {
+    if (!isLoggedIn) {
+      setAuthModalOpen(true) // نمایش مودال لاگین اگر کاربر لاگین نیست
+      return
+    }
+
     setLoading(true)
     const res = await fetch('/api/cart', {
       method: 'POST',
@@ -68,6 +77,7 @@ export default function SingleProductPage() {
     })
     const data = await res.json()
     setLoading(false)
+
     if (res.ok) {
       setInCart(true)
     } else {
@@ -78,7 +88,7 @@ export default function SingleProductPage() {
   if (loading)
     return (
       <div className="min-h-screen grid place-items-center">
-        <FiLoader size={48} />
+        <FiLoader size={48} className="animate-spin" />
       </div>
     )
   if (error) return <div className="text-red-500">{error}</div>
@@ -90,9 +100,15 @@ export default function SingleProductPage() {
         addToCart={addToCart}
         inCart={inCart}
         isLoading={loading}
+        isLoggedIn={isLoggedIn}
       />
 
       <RelatedProducts relatedProducts={relatedProducts} />
+
+      <AuthModal
+        isOpen={isAuthModalOpen}
+        onClose={() => setAuthModalOpen(false)}
+      />
     </div>
   )
 }

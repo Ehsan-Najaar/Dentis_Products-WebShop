@@ -41,6 +41,7 @@ const AuthModal = ({ isOpen, onClose }) => {
   return (
     <div
       className="fixed inset-0 flex items-center justify-center bg-black/50 z-50"
+      style={{margin: 0}}
       onClick={handleClose} // بستن مودال هنگام کلیک بیرون از آن
     >
       <div

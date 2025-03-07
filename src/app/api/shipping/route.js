@@ -9,7 +9,7 @@ export async function getServerSideProps() {
   try {
     await connectDB() // اتصال به دیتابیس
 
-    const shippingData = await Shipping.findOne().lean()
+    const shippingData = await Shipping.findOne()
 
     if (!shippingData) {
       return new Response(JSON.stringify({ shippingCost: 50000 }), {

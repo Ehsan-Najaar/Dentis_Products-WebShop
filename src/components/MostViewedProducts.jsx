@@ -52,7 +52,8 @@ export default function MostViewedProducts() {
       <div className="w-1/3 flex flex-col justify-between">
         <h2 className="h2">محصولات پربازدید ما</h2>
         <p className="body-text">
-          محصولات پرفروش ما شامل مواد مصرفی و تجهیزات با کیفیت دندانپزشکی هستند.
+          محصولات پربازدید ما شامل محبوب‌ترین و پرفروش‌ترین تجهیزات و مواد مصرفی
+          دندانپزشکی هستند.{' '}
         </p>
 
         {/* دکمه‌های کنترلی اسلایدر */}

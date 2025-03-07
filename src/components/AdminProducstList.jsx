@@ -12,9 +12,7 @@ export default function AdminProductsList({ products, onDelete }) {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/categories`
-        )
+        const res = await fetch(`/api/categories`)
         if (!res.ok) throw new Error('خطا در دریافت دسته‌بندی‌ها')
         const data = await res.json()
         const categoryMap = Object.fromEntries(

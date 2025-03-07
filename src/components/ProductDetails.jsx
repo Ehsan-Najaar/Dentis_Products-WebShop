@@ -17,6 +17,7 @@ export default function ProductDetails({
   addToCart,
   inCart,
   isLoading,
+  isLoggedIn,
 }) {
   const [selectedImage, setSelectedImage] = useState(product?.images[0] || '')
   const [productNumber, setProductNumber] = useState(1)
@@ -78,7 +79,7 @@ export default function ProductDetails({
   // افزودن محصول به سبد خرید
   const updateCart = (quantity) => {
     addToCart(quantity)
-    setIsInCart(true)
+    isLoggedIn && setIsInCart(true)
   }
 
   // محاسبه قیمت نهایی محصول بر اساس تعداد انتخاب شده
@@ -231,19 +232,21 @@ export default function ProductDetails({
 
               <button
                 className={`flex items-center gap-2 py-4 px-8 rounded-lg ${
-                  isInCart ? 'bg-gray-500 text-gray-100' : 'btn-primary'
+                  isLoggedIn && isInCart
+                    ? 'bg-gray-500 text-gray-100'
+                    : 'btn-primary'
                 }`}
                 onClick={() => !isInCart && updateCart(productNumber)}
                 disabled={isInCart || cartLoading}
               >
                 {cartLoading
                   ? 'درحال افزودن...'
-                  : isInCart
+                  : isLoggedIn && isInCart
                   ? 'اضافه شد به سبد خرید'
                   : 'افزودن به سبد خرید'}
                 {cartLoading ? (
                   <FiLoader className="animate-spin" size={18} />
-                ) : isInCart ? (
+                ) : isLoggedIn && isInCart ? (
                   <FiCheck size={18} />
                 ) : (
                   <FiShoppingCart size={18} />

@@ -102,6 +102,7 @@ const ProductCard1 = ({ product }) => {
                 alt="افزودن به سبد خرید"
                 width={24}
                 height={24}
+                unoptimized
               />
             ) : inCart ? (
               <FiCheckCircle size={24} className="text-primary" /> // آیکون تیک
@@ -111,6 +112,7 @@ const ProductCard1 = ({ product }) => {
                 alt="افزودن به سبد خرید"
                 width={24}
                 height={24}
+                unoptimized
               />
             )}
           </button>

@@ -1,7 +1,9 @@
 'use client'
 
 import AdminPanelNavbar from '@/components/AdminPanelNavbar'
+import ProtectedRoute from '@/components/ProtectedRoute'
 import { useEffect, useState } from 'react'
+import { useAppContext } from '../../../../context/AppContext'
 
 // تابع برای فرمت‌دهی قیمت
 const formatCurrency = (value) => {
@@ -15,6 +17,7 @@ const removeCommas = (value) => {
 }
 
 function AdminShipping() {
+  const { showToast } = useAppContext()
   const [shippingCost, setShippingCost] = useState('')
   const [formData, setFormData] = useState({ shippingCost: '' })
 
@@ -37,7 +40,7 @@ function AdminShipping() {
   const updateShippingCost = async () => {
     const numericValue = Number(removeCommas(formData.shippingCost)) // تبدیل به عدد
     if (isNaN(numericValue) || numericValue < 0) {
-      alert('لطفاً مقدار معتبر وارد کنید!')
+      showToast('لطفا مقدار معتبر وارد کنید', '')
       return
     }
 
@@ -48,7 +51,7 @@ function AdminShipping() {
     })
 
     if (res.ok) {
-      alert('هزینه ارسال با موفقیت ویرایش شد!')
+      showToast('هزینه ارسال با موفقیت ویرایش شد', '')
       fetchShippingCost() // مقدار جدید را دریافت کن
     }
   }
@@ -76,27 +79,29 @@ function AdminShipping() {
   }
 
   return (
-    <div className="min-h-screen flex p-6 gap-12">
-      {/* نوار کناری */}
-      <AdminPanelNavbar />
+    <ProtectedRoute>
+      <div className="min-h-screen flex p-6 gap-12">
+        {/* نوار کناری */}
+        <AdminPanelNavbar />
 
-      <div className="w-4/5 p-4 bg-lightGray rounded-2xl shadow-lg space-y-16">
-        <h3 className="h3">هزینه ارسال</h3>
-        <div className="w-1/3 input flex items-center justify-between">
-          <input
-            name="shippingCost"
-            placeholder="قیمت"
-            value={formData.shippingCost}
-            onChange={handleChange}
-            className="bg-transparent focus:outline-none"
-          />
-          <span className="ml-2 text-gray-400">تومان</span>
+        <div className="w-4/5 p-4 bg-lightGray rounded-2xl shadow-lg space-y-16">
+          <h3 className="h3">هزینه ارسال</h3>
+          <div className="w-1/3 input flex items-center justify-between">
+            <input
+              name="shippingCost"
+              placeholder="قیمت"
+              value={formData.shippingCost}
+              onChange={handleChange}
+              className="bg-transparent focus:outline-none"
+            />
+            <span className="ml-2 text-gray-400">تومان</span>
+          </div>
+          <button onClick={updateShippingCost} className="btn-primary">
+            ویرایش هزینه ارسال
+          </button>
         </div>
-        <button onClick={updateShippingCost} className="btn-primary">
-          ویرایش هزینه ارسال
-        </button>
       </div>
-    </div>
+    </ProtectedRoute>
   )
 }
 

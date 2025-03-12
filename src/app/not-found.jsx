@@ -8,7 +8,7 @@ export default function NotFoundPage() {
         {/* تصویر 404 */}
         <div className="">
           <Image
-            src="/images/404.png"
+            src="/images/404.webp"
             alt="صفحه یافت نشد"
             width={492}
             height={492}

@@ -1,12 +1,26 @@
+import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
 import slugify from 'slugify' // حتماً نصب شود
 import connectDB from '../../../../../lib/db'
 import Product from '../../../../../models/Product'
 
+// 📌 بررسی احراز هویت
+async function checkSession() {
+  const session = await getServerSession()
+  if (!session) {
+    throw new Error('Unauthorized')
+  }
+  return session
+}
+
 // 📌 دریافت یک محصول بر اساس ID و افزایش بازدید
 export async function GET(req, { params }) {
   try {
     await connectDB()
+
+    // بررسی احراز هویت
+    await checkSession()
+
     const { id } = params
 
     // پیدا کردن محصول و افزایش `views` همزمان
@@ -22,6 +36,10 @@ export async function GET(req, { params }) {
 
     return NextResponse.json(product, { status: 200 })
   } catch (error) {
+    console.error('خطا در دریافت محصول:', error)
+    if (error.message === 'Unauthorized') {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    }
     return NextResponse.json(
       { message: 'خطا در دریافت محصول', error: error.message },
       { status: 500 }
@@ -33,6 +51,10 @@ export async function GET(req, { params }) {
 export async function DELETE(req, { params }) {
   try {
     await connectDB()
+
+    // بررسی احراز هویت
+    await checkSession()
+
     const { id } = params
 
     const deletedProduct = await Product.findByIdAndDelete(id)
@@ -45,6 +67,7 @@ export async function DELETE(req, { params }) {
       { status: 200 }
     )
   } catch (error) {
+    console.error('خطا در حذف محصول:', error)
     return NextResponse.json(
       { message: 'خطا در حذف محصول', error: error.message },
       { status: 500 }
@@ -54,12 +77,15 @@ export async function DELETE(req, { params }) {
 
 // 📌 ویرایش اطلاعات یک محصول بر اساس ID
 export async function PUT(request, { params }) {
-  await connectDB()
-
-  const { id } = params
-  const updateData = await request.json()
-
   try {
+    await connectDB()
+
+    // بررسی احراز هویت
+    await checkSession()
+
+    const { id } = params
+    const updateData = await request.json()
+
     // دریافت محصول قدیمی
     const existingProduct = await Product.findById(id)
     if (!existingProduct) {
@@ -98,6 +124,7 @@ export async function PUT(request, { params }) {
 
     return NextResponse.json(updatedProduct, { status: 200 })
   } catch (error) {
+    console.error('خطا در ویرایش محصول:', error)
     return NextResponse.json(
       { message: 'خطا در ویرایش محصول', error: error.message },
       { status: 500 }

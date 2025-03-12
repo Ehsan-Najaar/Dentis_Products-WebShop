@@ -1,8 +1,10 @@
 'use client'
 
 import { useEffect, useState } from 'react'
+import { useAppContext } from '../../context/AppContext'
 
 export default function UserInformation({ userInfo, isLoading, error }) {
+  const { showToast } = useAppContext()
   const [formData, setFormData] = useState({
     name: userInfo?.name || '',
     phone: userInfo?.mobile || '', // اینجا به mobile تغییر داده شده است
@@ -62,18 +64,18 @@ export default function UserInformation({ userInfo, isLoading, error }) {
       })
 
       // نمایش پیام موفقیت
-      window.alert('اطلاعات با موفقیت به‌روزرسانی شد!')
+      showToast('اطلاعات با موفقیت بروزرسانی شد', 'success')
     } catch (error) {
       console.error('Error updating user info:', error)
       // نمایش پیام خطا
-      window.alert('خطا در به‌روزرسانی اطلاعات!')
+      showToast('خطا در ذخیره بروزرسانی اطلاعات', 'success')
     }
   }
 
   if (isLoading) {
     return (
-      <div className="h-auto w-4/5 bg-lightGray text-dark rounded-2xl flex flex-col items-center p-6 shadow-lg gap-4">
-        <p>در حال بارگذاری...</p>
+      <div className="h-auto w-4/5 bg-lightGray text-dark rounded-2xl shadow-lg grid place-items-center">
+        <span className="loader"></span>
       </div>
     )
   }

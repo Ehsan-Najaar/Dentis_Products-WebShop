@@ -1,14 +1,16 @@
 'use client'
 
 import { ProductCard1 } from '@/components/ProductCards'
+import { ProductCardSkeleton } from '@/components/ProductCardSkeleton'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { FiLoader, FiSearch, FiX } from 'react-icons/fi'
+import { FiSearch, FiX } from 'react-icons/fi'
 
 export default function SearchModal({ isOpen, onClose }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
+  const [searched, setSearched] = useState(false) // اضافه کردن وضعیت جستجو
   const pathname = usePathname()
 
   useEffect(() => {
@@ -22,12 +24,14 @@ export default function SearchModal({ isOpen, onClose }) {
     if (!isOpen) {
       setSearchTerm('')
       setResults([])
+      setSearched(false) // پاک کردن وضعیت جستجو هنگام بستن مودال
     }
   }, [isOpen])
 
   // دریافت نتایج جستجو از API زمانی که searchTerm تغییر می‌کند
   useEffect(() => {
     if (searchTerm.trim()) {
+      setSearched(true) // فعال کردن وضعیت جستجو
       const fetchResults = async () => {
         setLoading(true)
         try {
@@ -44,6 +48,7 @@ export default function SearchModal({ isOpen, onClose }) {
       fetchResults()
     } else {
       setResults([])
+      setSearched(false) // غیرفعال کردن وضعیت جستجو اگر چیزی جستجو نشد
     }
   }, [searchTerm])
 
@@ -84,22 +89,30 @@ export default function SearchModal({ isOpen, onClose }) {
 
         {/* نمایش لودینگ یا نتایج */}
         {loading ? (
-          <div className="h-96 grid place-items-center text-gray-500">
-            <FiLoader size={48} />
+          <div className="w-full grid grid-cols-4 gap-4 h-96 max-h-96 overflow-auto p-4">
+            {/* استفاده از ProductCardSkeleton به جای loader */}
+            <ProductCardSkeleton />
+            <ProductCardSkeleton />
+            <ProductCardSkeleton />
+            <ProductCardSkeleton />
+            <ProductCardSkeleton />
+            <ProductCardSkeleton />
+            <ProductCardSkeleton />
+            <ProductCardSkeleton />
           </div>
         ) : (
           <div className="w-full grid grid-cols-4 gap-4 h-96 max-h-96 overflow-auto p-4">
             {/* نمایش محصولات یا پیام "محصولی یافت نشد" */}
-            {results.length > 0 ? (
+            {searched && results.length === 0 ? (
+              <div className="col-span-4 w-full h-12 flex items-center justify-center text-gray-500">
+                <p>محصولی یافت نشد.</p>
+              </div>
+            ) : (
               results.map((product) => (
                 <div key={product._id}>
                   <ProductCard1 product={product} />
                 </div>
               ))
-            ) : (
-              <div className="col-span-4 w-full h-12 flex items-center justify-center text-gray-500">
-                <p>محصولی یافت نشد.</p>
-              </div>
             )}
           </div>
         )}

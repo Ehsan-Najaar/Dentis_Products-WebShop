@@ -1,6 +1,7 @@
 'use client'
 
 import { ProductCard1 } from '@/components/ProductCards'
+import { ProductCardSkeleton } from '@/components/ProductCardSkeleton'
 import { useEffect, useState } from 'react'
 
 export default function ProductsList({ filters, selectedSort }) {
@@ -13,7 +14,27 @@ export default function ProductsList({ filters, selectedSort }) {
       try {
         setLoading(true)
 
-        const res = await fetch('/api/products')
+        // ساخت URL با فیلترها
+        const params = new URLSearchParams()
+
+        if (filters?.selectedCategory?.length) {
+          params.append('category', filters.selectedCategory.join(','))
+        }
+
+        if (filters?.selectedBrand?.length) {
+          params.append('brands', filters.selectedBrand.join(','))
+        }
+
+        if (filters?.priceRange?.length === 2) {
+          params.append('minPrice', filters.priceRange[0])
+          params.append('maxPrice', filters.priceRange[1])
+        }
+
+        if (selectedSort) {
+          params.append('sort', selectedSort)
+        }
+
+        const res = await fetch(`/api/products?${params.toString()}`)
         const data = await res.json()
 
         if (!res.ok) {
@@ -30,46 +51,18 @@ export default function ProductsList({ filters, selectedSort }) {
     }
 
     fetchProducts()
-  }, [])
-
-  if (loading)
-    return <p className="text-center text-gray-500">در حال بارگذاری...</p>
-  if (error) return <p className="text-center text-red-500">{error}</p>
-
-  // فیلتر کردن محصولات
-  let filteredProducts = products.filter((product) => product.quantity > 0)
-
-  if (filters?.selectedCategory) {
-    filteredProducts = filteredProducts.filter(
-      (product) => product.category === filters.selectedCategory
-    )
-  }
-
-  if (filters?.selectedBrand?.length) {
-    filteredProducts = filteredProducts.filter((product) =>
-      filters.selectedBrand.includes(product.brand)
-    )
-  }
-
-  if (filters?.priceRange?.length === 2) {
-    filteredProducts = filteredProducts.filter(
-      (product) =>
-        product.price >= filters.priceRange[0] &&
-        product.price <= filters.priceRange[1]
-    )
-  }
-
-  // مرتب‌سازی در فرانت‌اند
-  if (selectedSort === 'price-asc') {
-    filteredProducts.sort((a, b) => a.price - b.price)
-  } else if (selectedSort === 'price-desc') {
-    filteredProducts.sort((a, b) => b.price - a.price)
-  }
+  }, [filters, selectedSort]) // ارسال دوباره درخواست به API در صورت تغییر فیلترها یا مرتب‌سازی
 
   return (
     <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-      {filteredProducts.length > 0 ? (
-        filteredProducts.map((product) => (
+      {loading ? (
+        Array.from({ length: 6 }).map((_, index) => (
+          <ProductCardSkeleton key={index} />
+        ))
+      ) : error ? (
+        <p className="text-center text-red-500 col-span-3">{error}</p>
+      ) : products.length > 0 ? (
+        products.map((product) => (
           <ProductCard1 key={product._id} product={product} />
         ))
       ) : (

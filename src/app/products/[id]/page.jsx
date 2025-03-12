@@ -1,16 +1,16 @@
 'use client'
 
 import AuthModal from '@/components/AuthModal'
+import Loader from '@/components/Loader'
 import ProductDetails from '@/components/ProductDetails'
 import RelatedProducts from '@/components/RelatedProducts'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { FiLoader } from 'react-icons/fi'
 import { useAppContext } from '../../../../context/AppContext'
 import { toSlug } from '../../../../utils/slugify'
 
 export default function SingleProductPage() {
-  const { isLoggedIn } = useAppContext()
+  const { isLoggedIn, showToast } = useAppContext()
 
   const pathname = usePathname()
   const slug = decodeURIComponent(pathname.split('/').pop())
@@ -80,17 +80,13 @@ export default function SingleProductPage() {
 
     if (res.ok) {
       setInCart(true)
+      showToast('محصول به سبد خرید اضافه شد', 'success')
     } else {
-      alert(data.message || 'خطا در افزودن محصول')
+      showToast('خطا در افزودن محصول به سبد خرید', 'error')
     }
   }
 
-  if (loading)
-    return (
-      <div className="min-h-screen grid place-items-center">
-        <FiLoader size={48} className="animate-spin" />
-      </div>
-    )
+  if (loading) return <Loader />
   if (error) return <div className="text-red-500">{error}</div>
 
   return (

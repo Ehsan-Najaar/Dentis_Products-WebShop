@@ -5,34 +5,32 @@ import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { FiChevronLeft, FiLogOut, FiMap } from 'react-icons/fi' // افزودن FiMap
+import { FiChevronLeft, FiLogOut, FiMap, FiSettings } from 'react-icons/fi'
 import { useAppContext } from '../../context/AppContext'
 
-export default function UserDropdownMenu() {
-  const { logout } = useAppContext()
+export default function UserDropdownMenu({ pathName }) {
+  const { logout, showToast } = useAppContext() // دریافت showToast از context
   const { data: session } = useSession()
   const router = useRouter()
 
-  // در صورتی که کاربر وارد نشده باشد، منو را نمایش ندهیم
   if (!session) return null
 
-  // خروج از حساب کاربری و ریدایرکت به صفحه اصلی
   const handleLogout = async () => {
     await logout()
+    showToast('شما با موفقیت از حساب خود خارج شدید.', 'success') // نمایش پیام موفقیت
     router.push('/')
   }
 
-  // تعیین مسیر مناسب بر اساس نقش کاربر
-  const dashboardLink =
-    session.user.role === 'admin'
-      ? '/admin/products'
-      : '/dashboard/edit-account'
+  const dashboardLink = '/dashboard/edit-account'
 
   return (
     <div className="relative inline-block text-right z-40">
       <div className="group">
-        {/* دکمه حساب کاربری */}
-        <div className="p-3 rounded-full bg-light hover:bg-accent transition-all duration-300 cursor-pointer">
+        <div
+          className={`p-3 rounded-full hover:bg-accent transition-all duration-300 cursor-pointer ${
+            pathName.startsWith('/dashboard') ? 'bg-accent' : 'bg-light'
+          }`}
+        >
           <Image
             src="/icons/User.png"
             alt="حساب کاربری"
@@ -41,7 +39,6 @@ export default function UserDropdownMenu() {
           />
         </div>
 
-        {/* منو بازشونده */}
         <div className="absolute -left-16 mt-2 w-44 rounded-lg bg-white ring-1 ring-dark ring-opacity-0 overflow-hidden max-h-0 group-hover:max-h-[500px] transition-all duration-300 z-10">
           <div className="border-b">
             <Link href={dashboardLink}>
@@ -66,10 +63,23 @@ export default function UserDropdownMenu() {
                 href="/dashboard/addresses"
                 className="flex items-center gap-2 w-full body-text"
               >
-                <FiMap size={20} /> {/* آیکون آدرس‌ها */}
+                <FiMap size={20} />
                 <span>آدرس‌های من</span>
               </Link>
             </li>
+
+            {session.user.role === 'admin' && (
+              <li className="flex items-center px-4 py-2 hover:bg-gray-100 cursor-pointer">
+                <Link
+                  href="/admin/products"
+                  className="flex items-center gap-2 w-full body-text"
+                >
+                  <FiSettings size={20} />
+                  <span>پنل ادمین</span>
+                </Link>
+              </li>
+            )}
+
             <li className="border-t">
               <button
                 onClick={handleLogout}

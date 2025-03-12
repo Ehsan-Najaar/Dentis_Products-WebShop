@@ -1,4 +1,5 @@
 import ConfirmDialog from '@/components/ConfirmDialog'
+import { AdminProductCardSkeleton } from '@/components/ProductCardSkeleton'
 import { Edit, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -8,6 +9,7 @@ export default function AdminProductsList({ products, onDelete }) {
   const [categories, setCategories] = useState({})
   const [confirmOpen, setConfirmOpen] = useState(false)
   const [selectedProduct, setSelectedProduct] = useState(null)
+  const [loading, setLoading] = useState(true)
 
   // get categories
   useEffect(() => {
@@ -22,6 +24,8 @@ export default function AdminProductsList({ products, onDelete }) {
         setCategories(categoryMap)
       } catch (error) {
         console.error('❌ خطا در دریافت دسته‌بندی‌ها:', error)
+      } finally {
+        setLoading(false)
       }
     }
     fetchCategories()
@@ -54,7 +58,14 @@ export default function AdminProductsList({ products, onDelete }) {
 
   return (
     <div className="h-[calc(100%-28%)] max-h-[calc(100%-28%)] p-2 space-y-4 overflow-auto">
-      {sortedProducts.length > 0 ? (
+      {loading ? (
+        // نمایش اسکلتون در حالت بارگذاری
+        <div className="grid gap-4">
+          {[...Array(5)].map((_, index) => (
+            <AdminProductCardSkeleton key={index} />
+          ))}
+        </div>
+      ) : sortedProducts.length > 0 ? (
         <div className="grid gap-4">
           {sortedProducts.map((product) => (
             <div

@@ -1,36 +1,53 @@
 'use client'
 import CartSummary from '@/components/CartSummary'
+import EmptyCart from '@/components/EmptyCart'
+import Loader from '@/components/Loader'
 import { ProductCard2 } from '@/components/ProductCards'
+import ProtectedRoute from '@/components/ProtectedRoute'
 import { useEffect, useState } from 'react'
+import { useAppContext } from '../../../context/AppContext'
 
 export default function CartPage() {
+  const { showToast } = useAppContext()
   const [cart, setCart] = useState([])
   const [shippingCost, setShippingCost] = useState(0)
+  const [loading, setLoading] = useState(true) // 🟢 حالت لودینگ
 
-  // بارگذاری اطلاعات سبد خرید از سرور و هزینه ارسال از API
   useEffect(() => {
     const fetchCart = async () => {
-      const res = await fetch('/api/cart')
-      if (res.ok) {
-        const data = await res.json()
-        console.log('Fetched cart:', data.cart) // 🛑 بررسی مقدار دریافتی از سرور
-        setCart(data.cart)
+      try {
+        const res = await fetch('/api/cart')
+        if (res.ok) {
+          const data = await res.json()
+          setCart(data.cart)
+        }
+      } catch (error) {
+        console.error('Error fetching cart:', error)
       }
     }
 
     const fetchShippingCost = async () => {
-      const res = await fetch('/api/shipping') // درخواست هزینه ارسال از API
-      if (res.ok) {
-        const data = await res.json()
-        setShippingCost(data.shippingCost) // ذخیره هزینه ارسال
+      try {
+        const res = await fetch('/api/shipping')
+        if (res.ok) {
+          const data = await res.json()
+          setShippingCost(data.shippingCost)
+        }
+      } catch (error) {
+        console.error('Error fetching shipping cost:', error)
       }
     }
 
-    fetchCart()
-    fetchShippingCost()
+    Promise.all([fetchCart(), fetchShippingCost()]).finally(() =>
+      setLoading(false)
+    ) // ⏳ پس از دریافت داده‌ها، لودینگ را غیرفعال می‌کنیم
   }, [])
 
-  // به‌روزرسانی تعداد محصول
+  // ✅ نمایش لودینگ هنگام دریافت داده‌ها
+  if (loading) {
+    return <Loader />
+  }
+
   const updateQuantity = async (productId, newQuantity) => {
     if (newQuantity < 1) return
 
@@ -42,7 +59,6 @@ export default function CartPage() {
 
     if (res.ok) {
       const data = await res.json()
-      console.log('Updated cart:', data.cart) // 🛑 بررسی مقدار بعد از آپدیت
       setCart(data.cart)
     }
   }
@@ -56,8 +72,8 @@ export default function CartPage() {
 
     if (res.ok) {
       const data = await res.json()
-      console.log('Cart after delete:', data.cart) // 🛑 بررسی مقدار بعد از حذف
       setCart(data.cart)
+      showToast('محصول از سبد خرید حذف شد', 'success')
     }
   }
 
@@ -67,27 +83,32 @@ export default function CartPage() {
   )
 
   return (
-    <div className="max-w-7xl mx-auto flex gap-12">
-      <section className="w-3/4">
-        <div className="flex-1 space-y-4">
-          {cart.length > 0 ? (
-            cart.map((product) => (
-              <ProductCard2
-                key={product.productId._id}
-                product={product}
-                onUpdateQuantity={updateQuantity}
-                onRemove={removeFromCart}
-              />
-            ))
-          ) : (
-            <p>سبد خرید شما خالی است.</p>
-          )}
-        </div>
-      </section>
+    <ProtectedRoute>
+      <div className="max-w-7xl mx-auto flex gap-12">
+        {/* ✅ اگر سبد خرید خالی بود، فقط عکس نمایش داده شود */}
+        {cart.length === 0 ? (
+          <EmptyCart />
+        ) : (
+          <>
+            <section className="w-3/4">
+              <div className="flex-1 space-y-4">
+                {cart.map((product) => (
+                  <ProductCard2
+                    key={product.productId._id}
+                    product={product}
+                    onUpdateQuantity={updateQuantity}
+                    onRemove={removeFromCart}
+                  />
+                ))}
+              </div>
+            </section>
 
-      <section className="w-1/4 h-fit sticky top-4">
-        <CartSummary total={total} shippingCost={shippingCost} />
-      </section>
-    </div>
+            <section className="w-1/4 h-fit sticky top-4">
+              <CartSummary total={total} shippingCost={shippingCost} />
+            </section>
+          </>
+        )}
+      </div>
+    </ProtectedRoute>
   )
 }

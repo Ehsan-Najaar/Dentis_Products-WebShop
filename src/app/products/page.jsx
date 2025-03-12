@@ -7,6 +7,8 @@ import { useEffect, useMemo, useState } from 'react'
 
 export default function ProductsPage() {
   const [products, setProducts] = useState([]) // همه محصولات از API
+  const [brands, setBrands] = useState([]) // برندها
+  const [origins, setOrigins] = useState([]) // کشورها
   const [filters, setFilters] = useState({
     priceRange: [0, 0],
     selectedBrand: [],
@@ -14,11 +16,52 @@ export default function ProductsPage() {
   })
   const [selectedSort, setSelectedSort] = useState('price-asc')
 
+  // ارسال درخواست به API و دریافت برندها و کشورها
+  useEffect(() => {
+    const fetchFiltersData = async () => {
+      try {
+        const res = await fetch('/api/products') // درخواست برای برندها و کشورها
+        const data = await res.json()
+
+        if (res.ok) {
+          setBrands(data.brands)
+          setOrigins(data.origins)
+        }
+      } catch (error) {
+        console.error('خطا در دریافت داده‌های فیلتر:', error)
+      }
+    }
+
+    fetchFiltersData()
+  }, []) // اجرا هنگام بارگذاری صفحه
+
+  // ارسال درخواست به API برای دریافت محصولات با فیلترهای فعال
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const res = await fetch('/api/products')
+        const params = new URLSearchParams()
+
+        if (filters.selectedCategory.length) {
+          params.append('category', filters.selectedCategory.join(','))
+        }
+
+        if (filters.selectedBrand.length) {
+          params.append('brands', filters.selectedBrand.join(','))
+        }
+
+        if (filters.priceRange[0] > 0 || filters.priceRange[1] > 0) {
+          params.append('minPrice', filters.priceRange[0])
+          params.append('maxPrice', filters.priceRange[1])
+        }
+
+        if (selectedSort) {
+          params.append('sort', selectedSort)
+        }
+
+        // ارسال درخواست به API با فیلترها
+        const res = await fetch(`/api/products?${params.toString()}`)
         const data = await res.json()
+
         if (res.ok) {
           setProducts(data)
         }
@@ -28,14 +71,10 @@ export default function ProductsPage() {
     }
 
     fetchProducts()
-  }, [])
+  }, [filters, selectedSort]) // اجرا هنگام تغییر فیلترها یا مرتب‌سازی
 
   const categories = useMemo(
     () => [...new Set(products.map((p) => p.category))],
-    [products]
-  )
-  const brands = useMemo(
-    () => [...new Set(products.map((p) => p.brand))],
     [products]
   )
 
@@ -54,7 +93,8 @@ export default function ProductsPage() {
       <section className="w-1/4 h-fit sticky top-4">
         <FilterSidebar
           categories={categories}
-          brands={brands}
+          brands={brands} // ارسال برندها به فیلتر سایدبار
+          origins={origins} // ارسال کشورها به فیلتر سایدبار
           priceMin={priceMin}
           priceMax={priceMax}
           onApplyFilters={(appliedFilters) => setFilters(appliedFilters)}
@@ -72,7 +112,7 @@ export default function ProductsPage() {
           onSortChange={setSelectedSort}
         />
 
-        <ProductsList filters={filters} selectedSort={selectedSort} />
+        <ProductsList products={products} />
       </section>
     </div>
   )

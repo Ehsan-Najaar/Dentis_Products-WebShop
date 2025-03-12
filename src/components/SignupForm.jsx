@@ -1,8 +1,10 @@
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import { FiLock, FiSmartphone, FiUser } from 'react-icons/fi'
+import { useAppContext } from '../../context/AppContext'
 
 const SignupForm = ({ email, setStep, onClose }) => {
+  const { showToast } = useAppContext()
   const [name, setName] = useState('')
   const [password, setPassword] = useState('')
   const [mobile, setMobile] = useState('')
@@ -36,11 +38,11 @@ const SignupForm = ({ email, setStep, onClose }) => {
       if (result?.error) throw new Error('ایمیل یا رمز عبور اشتباه است')
 
       // بسته شدن مودال بعد از ورود موفق
-      alert('ثبت‌نام و ورود موفقیت‌آمیز بود!')
+      showToast('ثبت‌نام و ورود موفقیت‌آمیز بود!', 'success')
       onClose() // بستن مودال
       setStep('email') // بازگشت به مرحله اول (ایمیل)
     } catch (error) {
-      setError(error.message || 'مشکلی پیش آمده است')
+      showToast(error.message || 'مشکلی پیش آمده است', 'error')
     }
 
     setLoading(false)

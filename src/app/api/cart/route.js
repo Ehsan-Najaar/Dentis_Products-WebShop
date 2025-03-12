@@ -11,15 +11,21 @@ export async function GET() {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
   }
 
-  const user = await User.findOne({ email: session.user.email }).populate(
-    'cart.productId'
-  )
+  try {
+    const user = await User.findOne({ email: session.user.email }).populate(
+      'cart.productId'
+    )
+    if (!user) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 })
+    }
 
-  if (!user) {
-    return NextResponse.json({ message: 'User not found' }, { status: 404 })
+    return NextResponse.json({ cart: user.cart })
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'Server error', error: error.message },
+      { status: 500 }
+    )
   }
-
-  return NextResponse.json({ cart: user.cart })
 }
 
 export async function POST(req) {
@@ -39,34 +45,35 @@ export async function POST(req) {
     )
   }
 
-  const user = await User.findOne({ email: session.user.email })
+  try {
+    const user = await User.findOne({ email: session.user.email })
+    if (!user) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 })
+    }
 
-  if (!user) {
-    return NextResponse.json({ message: 'User not found' }, { status: 404 })
+    const cartItem = user.cart.find(
+      (item) => item.productId.toString() === productId
+    )
+
+    if (cartItem) {
+      cartItem.quantity = quantity
+    } else {
+      user.cart.push({ productId, quantity })
+    }
+
+    await user.save()
+    await user.populate('cart.productId')
+
+    return NextResponse.json({
+      message: 'Product updated in cart',
+      cart: user.cart,
+    })
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'Server error', error: error.message },
+      { status: 500 }
+    )
   }
-
-  console.log('Before update:', user.cart) // 🛑 بررسی مقدار قبل از تغییر
-
-  const cartItem = user.cart.find(
-    (item) => item.productId.toString() === productId
-  )
-
-  if (cartItem) {
-    cartItem.quantity = quantity
-  } else {
-    user.cart.push({ productId, quantity })
-  }
-
-  await user.save()
-
-  console.log('After update:', user.cart) // 🛑 بررسی مقدار بعد از تغییر
-
-  await user.populate('cart.productId')
-
-  return NextResponse.json({
-    message: 'Product updated in cart',
-    cart: user.cart,
-  })
 }
 
 export async function DELETE(req) {
@@ -86,26 +93,27 @@ export async function DELETE(req) {
     )
   }
 
-  const user = await User.findOne({ email: session.user.email })
+  try {
+    const user = await User.findOne({ email: session.user.email })
+    if (!user) {
+      return NextResponse.json({ message: 'User not found' }, { status: 404 })
+    }
 
-  if (!user) {
-    return NextResponse.json({ message: 'User not found' }, { status: 404 })
+    user.cart = user.cart.filter(
+      (item) => item.productId.toString() !== productId
+    )
+
+    await user.save()
+    await user.populate('cart.productId')
+
+    return NextResponse.json({
+      message: 'Product removed from cart',
+      cart: user.cart,
+    })
+  } catch (error) {
+    return NextResponse.json(
+      { message: 'Server error', error: error.message },
+      { status: 500 }
+    )
   }
-
-  console.log('Before delete:', user.cart) // 🛑 بررسی مقدار قبل از حذف
-
-  user.cart = user.cart.filter(
-    (item) => item.productId.toString() !== productId
-  )
-
-  await user.save()
-
-  console.log('After delete:', user.cart) // 🛑 بررسی مقدار بعد از حذف
-
-  await user.populate('cart.productId')
-
-  return NextResponse.json({
-    message: 'Product removed from cart',
-    cart: user.cart,
-  })
 }

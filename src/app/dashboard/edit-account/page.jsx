@@ -1,6 +1,7 @@
 'use client'
 
 import DashboardPanelNavbar from '@/components/DashboardPanelNavbar'
+import ProtectedRoute from '@/components/ProtectedRoute'
 import UserInformaitno from '@/components/UserInformaitno'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
@@ -27,13 +28,15 @@ export default function EditAccount() {
   }, [session])
 
   return (
-    <div className="max-w-7xl mx-auto flex gap-12">
-      <DashboardPanelNavbar />
-      <UserInformaitno
-        userInfo={userInfo}
-        isLoading={isLoading}
-        error={error}
-      />
-    </div>
+    <ProtectedRoute>
+      <div className="max-w-7xl mx-auto flex gap-12">
+        <DashboardPanelNavbar />
+        <UserInformaitno
+          userInfo={userInfo}
+          isLoading={isLoading}
+          error={error}
+        />
+      </div>
+    </ProtectedRoute>
   )
 }

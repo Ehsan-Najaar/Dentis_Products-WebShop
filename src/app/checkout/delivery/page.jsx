@@ -1,6 +1,7 @@
 'use client'
 
 import { CheckoutSummary } from '@/components/CheckoutSummary'
+import ProtectedRoute from '@/components/ProtectedRoute'
 import StepProgress from '@/components/StepProgress'
 import UserAddresses from '@/components/UserAddresses'
 import { useEffect, useState } from 'react'
@@ -24,19 +25,21 @@ export default function DeliveryPage() {
   const shippingCost = cart?.shippingCost || 0
 
   return (
-    <div className="max-w-7xl mx-auto mt-10 space-y-24">
-      <StepProgress />
+    <ProtectedRoute>
+      <div className="max-w-7xl mx-auto mt-10 space-y-24">
+        <StepProgress />
 
-      <div className="flex gap-12">
-        <section className="w-2/3 space-y-4">
-          <div className="h-[500px] bg-lightGray p-4 rounded-2xl shadow space-y-6">
-            <UserAddresses userId={userId} />
-          </div>
-        </section>
-        <section className="w-1/3 bg-lightGray p-4 rounded-2xl shadow space-y-6">
-          <CheckoutSummary total={total} shippingCost={shippingCost} />
-        </section>
+        <div className="flex gap-12">
+          <section className="w-2/3 space-y-4">
+            <div className="h-[500px] bg-lightGray p-4 rounded-2xl shadow space-y-6">
+              <UserAddresses userId={userId} />
+            </div>
+          </section>
+          <section className="w-1/3 bg-lightGray p-4 rounded-2xl shadow space-y-6">
+            <CheckoutSummary total={total} shippingCost={shippingCost} />
+          </section>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   )
 }

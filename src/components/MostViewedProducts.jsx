@@ -1,6 +1,7 @@
 'use client'
 
 import { ProductCard1 } from '@/components/ProductCards'
+import { ProductCardSkeleton } from '@/components/ProductCardSkeleton'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { FiArrowLeft, FiChevronLeft, FiChevronRight } from 'react-icons/fi'
@@ -10,53 +11,48 @@ import { Autoplay, Navigation } from 'swiper/modules'
 import { Swiper, SwiperSlide } from 'swiper/react'
 
 export default function MostViewedProducts() {
-  // تعریف state برای ذخیره محصولات
   const [products, setProducts] = useState([])
-  // نگهداری نمونه‌ی Swiper برای کنترل دکمه‌ها
   const [swiperInstance, setSwiperInstance] = useState(null)
-  // وضعیت دکمه‌های ناوبری
   const [isBeginning, setIsBeginning] = useState(true)
   const [isEnd, setIsEnd] = useState(false)
+  const [loading, setLoading] = useState(true) // وضعیت بارگذاری
 
-  // دریافت لیست محصولات از API
   useEffect(() => {
     fetch('/api/products')
       .then((res) => res.json())
       .then((data) => {
-        // مرتب‌سازی محصولات بر اساس تعداد بازدید
         const sortedProducts = data.sort((a, b) => b.views - a.views)
         setProducts(sortedProducts.slice(0, 8)) // محدود کردن تعداد محصولات به ۸ محصول پربازدید
+        setLoading(false) // پس از دریافت داده‌ها بارگذاری تمام می‌شود
       })
-      .catch((err) => console.error('خطا در دریافت محصولات:', err))
+      .catch((err) => {
+        console.error('خطا در دریافت محصولات:', err)
+        setLoading(false) // حتی در صورت خطا، بارگذاری تمام می‌شود
+      })
   }, [])
 
-  // به‌روزرسانی وضعیت دکمه‌های ناوبری اسلایدر
   const updateSwiperState = (swiper) => {
     setIsBeginning(swiper.isBeginning)
     setIsEnd(swiper.isEnd)
   }
 
-  // کنترل حرکت به اسلاید قبلی
   const goToPrevSlide = () => {
     swiperInstance?.slidePrev()
   }
 
-  // کنترل حرکت به اسلاید بعدی
   const goToNextSlide = () => {
     swiperInstance?.slideNext()
   }
 
   return (
     <section className="flex justify-between py-24 pr-24 bg-lightGray">
-      {/* بخش توضیحات و ناوبری */}
       <div className="w-1/3 flex flex-col justify-between">
         <h2 className="h2">محصولات پربازدید ما</h2>
         <p className="body-text">
           محصولات پربازدید ما شامل محبوب‌ترین و پرفروش‌ترین تجهیزات و مواد مصرفی
-          دندانپزشکی هستند.{' '}
+          دندانپزشکی هستند.
         </p>
 
-        {/* دکمه‌های کنترلی اسلایدر */}
         <div className="w-max">
           <div className="flex gap-2 z-10">
             <button
@@ -82,7 +78,6 @@ export default function MostViewedProducts() {
           </div>
         </div>
 
-        {/* دکمه مشاهده محصولات بیشتر */}
         <Link
           href="/products"
           className="w-max btn-primary rounded-full flex items-center gap-2"
@@ -92,7 +87,6 @@ export default function MostViewedProducts() {
         </Link>
       </div>
 
-      {/* اسلایدر Swiper */}
       <Swiper
         modules={[Navigation, Autoplay]}
         onSwiper={(swiper) => {
@@ -116,11 +110,23 @@ export default function MostViewedProducts() {
           1440: { slidesPerView: 3, spaceBetween: 16 },
         }}
       >
-        {products.map((product) => (
-          <SwiperSlide key={product.id} aria-label={`محصول: ${product.name}`}>
-            <ProductCard1 product={product} />
-          </SwiperSlide>
-        ))}
+        {/* اگر هنوز در حال بارگذاری هستیم، اسکلتون را نشان بدهیم */}
+        {loading
+          ? Array(8)
+              .fill(null)
+              .map((_, index) => (
+                <SwiperSlide key={index}>
+                  <ProductCardSkeleton />
+                </SwiperSlide>
+              ))
+          : products.map((product) => (
+              <SwiperSlide
+                key={product.id}
+                aria-label={`محصول: ${product.name}`}
+              >
+                <ProductCard1 product={product} />
+              </SwiperSlide>
+            ))}
       </Swiper>
     </section>
   )

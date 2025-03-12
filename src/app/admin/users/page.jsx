@@ -1,6 +1,7 @@
 'use client'
 
 import AdminPanelNavbar from '@/components/AdminPanelNavbar'
+import ProtectedRoute from '@/components/ProtectedRoute'
 import UserTable from '@/components/UserTable'
 import { useEffect, useState } from 'react'
 import { FiSearch } from 'react-icons/fi'
@@ -45,32 +46,41 @@ export default function Users() {
   )
 
   return (
-    <div className="min-h-screen flex p-6 gap-12">
-      {/* نوار کناری */}
-      <AdminPanelNavbar />
+    <ProtectedRoute>
+      <div className="min-h-screen flex p-6 gap-12">
+        {/* نوار کناری */}
+        <AdminPanelNavbar />
 
-      {/* مین کانتنت */}
-      <div className="w-4/5 p-4 bg-lightGray rounded-2xl shadow-lg space-y-16">
-        <div className="flex items-center justify-between mb-4">
-          <div className="w-56 flex items-center gap-2">
-            <h2 className="h3">لیست کاربران</h2>
-            <small>({filteredUsers.length}) کاربر</small>
+        {/* مین کانتنت */}
+        <div className="w-4/5 p-4 bg-lightGray rounded-2xl shadow-lg space-y-16">
+          <div className="flex items-center justify-between mb-4">
+            <div className="w-56 flex items-center gap-2">
+              <h2 className="h3">لیست کاربران</h2>
+              <small>({filteredUsers.length}) کاربر</small>
+            </div>
+            <div className="w-1/3 flex items-center gap-2 px-4 py-2 bg-light shadow-sm rounded-full">
+              <input
+                type="text"
+                placeholder="جستجو نام یا ایمیل کاربر..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="w-full bg-transparent focus:outline-none"
+              />
+              <FiSearch size={24} className="text-gray-500" />
+            </div>
           </div>
-          <div className="w-1/3 flex items-center gap-2 px-4 py-2 bg-light shadow-sm rounded-full">
-            <input
-              type="text"
-              placeholder="جستجو نام یا ایمیل کاربر..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full bg-transparent focus:outline-none"
-            />
-            <FiSearch size={24} className="text-gray-500" />
-          </div>
+
+          {/* نمایش لودر در صورت بارگذاری */}
+          {loading ? (
+            <div className="h-96 grid place-items-center">
+              <span className="loader"></span>
+            </div>
+          ) : (
+            // جدول کاربران
+            <UserTable users={filteredUsers} error={error} loading={loading} />
+          )}
         </div>
-
-        {/* جدول کاربران */}
-        <UserTable users={filteredUsers} error={error} loading={loading} />
       </div>
-    </div>
+    </ProtectedRoute>
   )
 }

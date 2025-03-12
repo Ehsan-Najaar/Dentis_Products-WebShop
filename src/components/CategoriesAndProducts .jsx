@@ -1,19 +1,19 @@
 'use client'
 
 import { ProductCard1 } from '@/components/ProductCards'
+import { ProductCardSkeleton } from '@/components/ProductCardSkeleton'
 import { motion } from 'framer-motion'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import { FiArrowLeft } from 'react-icons/fi'
 
 const CategoriesAndProducts = () => {
-  // وضعیت‌های ذخیره دسته‌بندی‌ها، محصولات و محصولات فیلتر شده
   const [categories, setCategories] = useState([])
   const [products, setProducts] = useState([])
   const [filteredProducts, setFilteredProducts] = useState([])
   const [activeCategory, setActiveCategory] = useState('all')
+  const [loading, setLoading] = useState(true) // اضافه کردن وضعیت لودینگ
 
-  // دریافت داده‌های دسته‌بندی و محصولات از API هنگام بارگذاری صفحه
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -22,7 +22,6 @@ const CategoriesAndProducts = () => {
           fetch('/api/products').then((res) => res.json()),
         ])
 
-        // تبدیل `_id` به رشته و اضافه کردن گزینه "همه"
         const formattedCategories = [
           { _id: 'all', name: 'همه' },
           ...categoriesRes.map((cat) => ({
@@ -31,7 +30,6 @@ const CategoriesAndProducts = () => {
           })),
         ]
 
-        // تبدیل `_id` و `category` محصولات به رشته برای جلوگیری از مشکلات مقایسه‌ای
         const formattedProducts = productsRes.map((product) => ({
           ...product,
           category: String(product.category),
@@ -43,13 +41,14 @@ const CategoriesAndProducts = () => {
         setFilteredProducts(formattedProducts.slice(0, 8))
       } catch (error) {
         console.error('خطا در دریافت داده‌ها:', error)
+      } finally {
+        setLoading(false) // پس از دریافت داده‌ها، لودینگ را غیرفعال کن
       }
     }
 
     fetchData()
   }, [])
 
-  // مدیریت کلیک روی دسته‌بندی و فیلتر محصولات
   const handleCategoryClick = (categoryId) => {
     setActiveCategory(categoryId)
 
@@ -64,32 +63,18 @@ const CategoriesAndProducts = () => {
   }
 
   return (
-    <section
-      className="max-w-7xl mx-auto space-y-6"
-      aria-labelledby="categories-products"
-    >
-      {/* هدر بخش محصولات */}
-      <header
-        className="flex items-center justify-between"
-        id="categories-products"
-      >
+    <section className="max-w-7xl mx-auto space-y-6">
+      <header className="flex items-center justify-between">
         <h2 className="h2">دسته‌بندی محصولات ما</h2>
         <Link href="/products">
-          <button
-            className="btn-primary rounded-full flex items-center gap-2"
-            aria-label="مشاهده محصولات بیشتر"
-          >
+          <button className="btn-primary rounded-full flex items-center gap-2">
             دیدن محصولات بیشتر
             <FiArrowLeft size={24} />
           </button>
         </Link>
       </header>
 
-      {/* لیست دسته‌بندی‌ها */}
-      <div
-        className="relative flex items-center flex-wrap gap-6 mb-6 border-b pb-2"
-        aria-live="polite"
-      >
+      <div className="relative flex items-center flex-wrap gap-6 mb-6 border-b pb-2">
         {categories.map((category) => (
           <span
             key={category._id}
@@ -99,10 +84,8 @@ const CategoriesAndProducts = () => {
                 ? 'text-primary'
                 : 'text-gray-500 hover:text-primary'
             }`}
-            aria-current={activeCategory === category._id ? 'true' : 'false'}
           >
             {category.name}
-            {/* انیمیشن خط اکتیو (از راست به چپ) */}
             {activeCategory === category._id && (
               <motion.div
                 layoutId="underline"
@@ -116,15 +99,16 @@ const CategoriesAndProducts = () => {
         ))}
       </div>
 
-      {/* لیست محصولات */}
-      <div className="grid grid-cols-4 gap-6" aria-live="polite">
-        {filteredProducts.filter((product) => product.quantity > 0).length >
-        0 ? (
-          filteredProducts
-            .filter((product) => product.quantity > 0)
-            .map((product) => (
-              <ProductCard1 key={product._id} product={product} />
-            ))
+      {/* نمایش اسکلتون در هنگام لودینگ */}
+      <div className="grid grid-cols-4 gap-6">
+        {loading ? (
+          Array.from({ length: 8 }).map((_, index) => (
+            <ProductCardSkeleton key={index} />
+          ))
+        ) : filteredProducts.length > 0 ? (
+          filteredProducts.map((product) => (
+            <ProductCard1 key={product._id} product={product} />
+          ))
         ) : (
           <p className="col-span-4 text-center text-gray-500">
             محصولی یافت نشد

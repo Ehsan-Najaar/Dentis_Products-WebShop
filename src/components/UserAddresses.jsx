@@ -1,16 +1,22 @@
 'use client'
 
+import ConfirmDialog from '@/components/ConfirmDialog'
 import { Edit, Plus, Signpost, Trash2 } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { FiMail, FiMapPin, FiX } from 'react-icons/fi'
+import { useAppContext } from '../../context/AppContext'
 
 const UserAddresses = ({ userId }) => {
+  const { showToast } = useAppContext()
   const pathname = usePathname()
   const [addresses, setAddresses] = useState([])
   const [selectedAddress, setSelectedAddress] = useState(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editingAddressId, setEditingAddressId] = useState(null)
+  const [loading, setLoading] = useState(true)
+  const [dialogOpen, setDialogOpen] = useState(false)
+  const [selectedAddressId, setSelectedAddressId] = useState(null)
   const [newAddress, setNewAddress] = useState({
     street: '',
     city: '',
@@ -20,11 +26,14 @@ const UserAddresses = ({ userId }) => {
   useEffect(() => {
     const fetchAddresses = async () => {
       try {
+        setLoading(true)
         const res = await fetch(`/api/addresses?userId=${userId}`)
         const data = await res.json()
         if (Array.isArray(data)) setAddresses(data)
       } catch (error) {
         console.error('Error fetching addresses:', error)
+      } finally {
+        setLoading(false)
       }
     }
     fetchAddresses()
@@ -42,7 +51,7 @@ const UserAddresses = ({ userId }) => {
       city: address.city,
       postalCode: address.postalCode,
     })
-    setEditingAddressId(address._id) // ذخیره آیدی آدرسی که قرار است ویرایش شود
+    setEditingAddressId(address._id)
     setIsModalOpen(true)
   }
 
@@ -65,6 +74,7 @@ const UserAddresses = ({ userId }) => {
       })
       const data = await res.json()
       setAddresses(data)
+      showToast('آدرس مورد نظر ویرایش شد', 'success')
     } else {
       // افزودن آدرس جدید
       const res = await fetch('/api/addresses', {
@@ -74,32 +84,51 @@ const UserAddresses = ({ userId }) => {
       })
       const data = await res.json()
       setAddresses(data)
+      showToast('آدرس مورد نظر اضافه شد', 'success')
     }
 
     setIsModalOpen(false) // بستن مودال پس از ذخیره
   }
 
-  const handleDeleteAddress = async (addressId) => {
-    if (!confirm('آیا از حذف این آدرس مطمئن هستید؟')) return
+  const confirmDeleteAddress = (addressId) => {
+    setSelectedAddressId(addressId)
+    setDialogOpen(true)
+  }
+
+  const handleDeleteAddress = async () => {
+    if (!selectedAddressId) return
 
     const res = await fetch(
-      `/api/addresses?userId=${userId}&addressId=${addressId}`,
+      `/api/addresses?userId=${userId}&addressId=${selectedAddressId}`,
       { method: 'DELETE' }
     )
 
     const text = await res.text()
-    console.log('Response:', text) // اینجا بررسی می‌کنیم که آیا پاسخ معتبر است؟
 
     try {
       const data = JSON.parse(text)
       setAddresses(data)
+      showToast('آدرس مورد نظر حذف شد', 'success')
     } catch (error) {
       console.error('Error parsing JSON:', error)
     }
+
+    setDialogOpen(false)
+    setSelectedAddressId(null)
+  }
+
+  if (loading) {
+    return (
+      // نمایش حالت لودینگ روی کل بخش
+      <div className="h-full w-4/5 bg-lightGray grid place-items-center">
+        <span className="loader"></span>
+      </div>
+    )
   }
 
   return (
     <div className="w-full">
+      {/* نمایش عنوان و دکمه افزودن آدرس */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="h3">
           {pathname.startsWith('/dashboard/addresses') ? (
@@ -108,6 +137,7 @@ const UserAddresses = ({ userId }) => {
             <span>انتخاب آدرس تحویل</span>
           )}
         </h2>
+
         <button
           onClick={openModalForAdd}
           disabled={addresses.length >= 3}
@@ -119,15 +149,16 @@ const UserAddresses = ({ userId }) => {
         </button>
       </div>
 
-      <ul
-        className={`${
-          pathname.startsWith('/dashboard/addresses')
-            ? 'h-[278px] max-h-[278px]'
-            : 'h-[410px] max-h-[410px]'
-        } overflow-auto p-2 space-y-2`}
-      >
-        {addresses.length > 0 ? (
-          addresses.map((address) => (
+      {/* نمایش لیست آدرس‌ها */}
+      {addresses.length > 0 ? (
+        <ul
+          className={`${
+            pathname.startsWith('/dashboard/addresses')
+              ? 'h-[278px] max-h-[278px]'
+              : 'h-[410px] max-h-[410px]'
+          } overflow-auto p-2 space-y-2`}
+        >
+          {addresses.map((address) => (
             <li
               key={address._id}
               onClick={() => {
@@ -164,16 +195,16 @@ const UserAddresses = ({ userId }) => {
                 <button onClick={() => openModalForEdit(address)}>
                   <Edit size={24} />
                 </button>
-                <button onClick={() => handleDeleteAddress(address._id)}>
+                <button onClick={() => confirmDeleteAddress(address._id)}>
                   <Trash2 size={24} />
                 </button>
               </div>
             </li>
-          ))
-        ) : (
-          <p>هیچ آدرسی وجود ندارد.</p>
-        )}
-      </ul>
+          ))}
+        </ul>
+      ) : (
+        <p>هیچ آدرسی وجود ندارد.</p>
+      )}
 
       {/* مودال افزودن/ویرایش آدرس */}
       {isModalOpen && (
@@ -230,6 +261,13 @@ const UserAddresses = ({ userId }) => {
           </div>
         </div>
       )}
+      <ConfirmDialog
+        isOpen={dialogOpen}
+        onClose={() => setDialogOpen(false)}
+        onConfirm={handleDeleteAddress}
+        title="حذف آدرس"
+        message="آیا از حذف این آدرس مطمئن هستید؟"
+      />
     </div>
   )
 }

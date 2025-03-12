@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useAppContext } from '../../context/AppContext'
 
 const ResetPasswordForm = ({ email, setStep, onClose }) => {
+  const { showToast } = useAppContext()
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -8,7 +10,7 @@ const ResetPasswordForm = ({ email, setStep, onClose }) => {
 
   const handleResetPassword = async () => {
     if (password !== confirmPassword) {
-      alert('رمزها یکسان نیستند!')
+      showToast('رمزها یکسان نیستند!', 'error')
       return
     }
 
@@ -17,18 +19,18 @@ const ResetPasswordForm = ({ email, setStep, onClose }) => {
     const response = await fetch('/api/auth/reset-password', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, newPassword: password }), // استفاده از password به جای newPassword
+      body: JSON.stringify({ email, newPassword: password }),
     })
 
     const data = await response.json()
     setLoading(false)
 
     if (data.success) {
-      alert('رمز عبور با موفقیت تغییر کرد!')
+      showToast('رمز عبور با موفقیت تغییر کرد!', 'success')
       setStep('login') // برگشت به صفحه ورود
       onClose() // بستن مودال بعد از تغییر رمز
     } else {
-      alert(data.message)
+      showToast(data.message, 'error')
     }
   }
 

@@ -1,6 +1,8 @@
 import { useState } from 'react'
+import { useAppContext } from '../../context/AppContext'
 
 const OTPForm = ({ email, setStep, flowType }) => {
+  const { showToast } = useAppContext()
   const [otp, setOtp] = useState('')
   const [loadingSend, setLoadingSend] = useState(false)
   const [loadingVerify, setLoadingVerify] = useState(false)
@@ -19,9 +21,10 @@ const OTPForm = ({ email, setStep, flowType }) => {
 
       if (!response.ok) throw new Error('مشکلی در ارسال کد تأیید پیش آمده است')
 
-      alert('کد تأیید به ایمیل شما ارسال شد!')
+      showToast('کد تأیید به ایمیل شما ارسال شد!', 'success')
     } catch (error) {
       setError(error.message || 'مشکلی پیش آمده است')
+      showToast(error.message || 'مشکلی پیش آمده است', 'error')
     }
 
     setLoadingSend(false)
@@ -43,11 +46,17 @@ const OTPForm = ({ email, setStep, flowType }) => {
       // بررسی کنیم که کاربر برای چه هدفی وارد شده
       if (flowType === 'forgotPassword') {
         setStep('reset-password') // اگر فراموشی رمز بود، به مرحله تغییر رمز برود
+        showToast(
+          'کد تأیید درست بود. به مرحله تغییر رمز هدایت شدید.',
+          'success'
+        )
       } else {
         setStep('signup') // اگر ثبت‌نام بود، به مرحله ثبت‌نام برود
+        showToast('کد تأیید درست بود. به مرحله ثبت‌نام هدایت شدید.', 'success')
       }
     } catch (error) {
       setError(error.message || 'مشکلی در تایید کد پیش آمده است')
+      showToast(error.message || 'مشکلی در تایید کد پیش آمده است', 'error')
     }
 
     setLoadingVerify(false)

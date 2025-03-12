@@ -1,8 +1,10 @@
 import { signIn } from 'next-auth/react'
 import { useState } from 'react'
 import { FiLock } from 'react-icons/fi'
+import { useAppContext } from '../../context/AppContext'
 
 const PasswordForm = ({ email, isSignUp, setStep, onClose }) => {
+  const { showToast } = useAppContext()
   const [password, setPassword] = useState('')
   const [name, setName] = useState('')
   const [loading, setLoading] = useState(false)
@@ -25,6 +27,8 @@ const PasswordForm = ({ email, isSignUp, setStep, onClose }) => {
           const errorData = await response.json()
           throw new Error(errorData.message || 'خطا در ثبت‌نام')
         }
+
+        showToast('ثبت‌نام با موفقیت انجام شد!', 'success')
       }
 
       // ورود به حساب
@@ -36,9 +40,11 @@ const PasswordForm = ({ email, isSignUp, setStep, onClose }) => {
 
       if (result?.error) throw new Error('ایمیل یا رمز عبور اشتباه است')
 
+      showToast('ورود با موفقیت انجام شد!', 'success')
       onClose()
     } catch (error) {
       setError(error.message)
+      showToast(error.message, 'error')
     }
 
     setLoading(false)
@@ -59,13 +65,13 @@ const PasswordForm = ({ email, isSignUp, setStep, onClose }) => {
           className="input"
         />
       </div>
-      {error && <p className="text-red-500 text-sm">{error}</p>}
+
       <button
         onClick={handleSubmit}
         disabled={loading}
         className="w-full btn-primary"
       >
-        {loading ? 'در حال برسی...' : isSignUp ? 'ثبت نام' : 'ورود'}
+        {loading ? 'در حال بررسی...' : isSignUp ? 'ثبت نام' : 'ورود'}
       </button>
     </div>
   )

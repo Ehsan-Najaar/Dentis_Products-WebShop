@@ -2,6 +2,7 @@
 
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
+import Toast from '@/components/Toast'
 import { SessionProvider } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
 import { AppProvider } from '../../context/AppContext'
@@ -20,6 +21,8 @@ export default function Layout({ children }) {
 
           {/* نمایش محتوا صفحات دیگر */}
           {children}
+
+          <Toast />
 
           {/* فوتر */}
           {!isAdminPage && <Footer />}

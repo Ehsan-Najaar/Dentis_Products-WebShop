@@ -1,9 +1,11 @@
 'use client'
 
 import AdminPanelNavbar from '@/components/AdminPanelNavbar'
+import ProtectedRoute from '@/components/ProtectedRoute'
 import Image from 'next/image'
 import { useEffect, useState } from 'react'
 import { FiArrowRight, FiPlus, FiRefreshCcw, FiTrash2 } from 'react-icons/fi'
+import { useAppContext } from '../../../../../context/AppContext'
 
 export default function AddProductPage() {
   const [formData, setFormData] = useState({
@@ -17,6 +19,7 @@ export default function AddProductPage() {
     description: '',
     images: [],
   })
+  const { showToast } = useAppContext()
   const [imageFiles, setImageFiles] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
@@ -28,7 +31,9 @@ export default function AddProductPage() {
     const fetchCategories = async () => {
       try {
         const res = await fetch(`/api/categories`)
-        if (!res.ok) throw new Error('خطا در دریافت دسته‌بندی‌ها')
+        if (!res.ok) {
+          showToast('خطا در دریافت دسته بندی ها', 'error')
+        }
 
         const data = await res.json()
         setCategories(data) // ذخیره دسته‌بندی‌ها در state
@@ -177,215 +182,224 @@ export default function AddProductPage() {
       })
 
       if (!res.ok) throw new Error('خطا در افزودن محصول')
-      window.location.href = '/admin/products'
+      setTimeout(() => {
+        window.location.href = '/admin/products'
+      }, 3000)
+
+      showToast('محصول با موفقیت اضافه شد', 'success')
     } catch (err) {
       setError(err.message)
+      showToast('خطا در افزودن محصول', 'error')
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen flex p-6 gap-12">
-      <AdminPanelNavbar />
-      <div className="w-4/5 p-6 bg-lightGray rounded-2xl shadow-lg space-y-6">
-        <div className="flex items-center gap-4">
-          <button
-            onClick={() => (window.location.href = '/admin/products')}
-            className="p-2 rounded-full bg-bg hover:bg-gray-300"
-          >
-            <FiArrowRight size={24} />
-          </button>
-          <h2 className="h3">افزودن محصول</h2>
-        </div>
-
-        {error && <p className="text-red-500 text-sm">{error}</p>}
-
-        <form onSubmit={handleSubmit} className="flex gap-8">
-          <div className="max-w-max">
-            <div className="flex flex-col items-center gap-4">
-              {imageFiles.map((file, index) => (
-                <div key={index} className="relative group">
-                  <Image
-                    src={URL.createObjectURL(file)}
-                    alt="Selected Image"
-                    width={128}
-                    height={128}
-                    className="rounded-lg"
-                  />
-
-                  {/* گزینه‌های حذف و جایگزین هنگام هاور */}
-                  <div className="absolute inset-0 flex items-center justify-center gap-2 rounded-lg bg-black/50 opacity-0 group-hover:opacity-100 transition">
-                    <label
-                      htmlFor={`replace-${index}`}
-                      className="cursor-pointer p-2 bg-light rounded-full"
-                    >
-                      <FiRefreshCcw size={20} />
-                    </label>
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveImage(index)}
-                      className="p-2 bg-light rounded-full"
-                    >
-                      <FiTrash2 size={20} />
-                    </button>
-                  </div>
-
-                  {/* اینپوت مخفی برای جایگزینی تصویر */}
-                  <input
-                    type="file"
-                    accept="image/*"
-                    id={`replace-${index}`}
-                    className="hidden"
-                    onChange={(e) => handleImageSelection(e, index)}
-                  />
-                </div>
-              ))}
-
-              {imageFiles.length < 4 && (
-                <label
-                  htmlFor="imageUpload"
-                  className="w-32 h-32 bg-bg rounded-lg flex flex-col items-center justify-center text-gray-500 cursor-pointer"
-                >
-                  <FiPlus size={40} />
-                  <span className="text-sm">افزودن</span>
-                </label>
-              )}
-              <input
-                type="file"
-                id="imageUpload"
-                className="hidden"
-                onChange={handleImageSelection}
-              />
-            </div>
+    <ProtectedRoute>
+      <div className="min-h-screen flex p-6 gap-12">
+        <AdminPanelNavbar />
+        <div className="w-4/5 p-6 bg-lightGray rounded-2xl shadow-lg space-y-6">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => (window.location.href = '/admin/products')}
+              className="p-2 rounded-full bg-bg hover:bg-gray-300"
+            >
+              <FiArrowRight size={24} />
+            </button>
+            <h2 className="h3">افزودن محصول</h2>
           </div>
 
-          <div className="w-full space-y-5">
-            <div className="grid grid-cols-2 gap-6 place-items-center">
-              <input
-                type="text"
-                name="name"
-                placeholder="نام محصول"
-                onChange={handleChange}
-                className="input"
-                required
-              />
-              <div className="input flex items-center justify-between">
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <form onSubmit={handleSubmit} className="flex gap-8">
+            <div className="max-w-max">
+              <div className="flex flex-col items-center gap-4">
+                {imageFiles.map((file, index) => (
+                  <div key={index} className="relative group">
+                    <Image
+                      src={URL.createObjectURL(file)}
+                      alt="Selected Image"
+                      width={128}
+                      height={128}
+                      className="rounded-lg"
+                    />
+
+                    {/* گزینه‌های حذف و جایگزین هنگام هاور */}
+                    <div className="absolute inset-0 flex items-center justify-center gap-2 rounded-lg bg-black/50 opacity-0 group-hover:opacity-100 transition">
+                      <label
+                        htmlFor={`replace-${index}`}
+                        className="cursor-pointer p-2 bg-light rounded-full"
+                      >
+                        <FiRefreshCcw size={20} />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveImage(index)}
+                        className="p-2 bg-light rounded-full"
+                      >
+                        <FiTrash2 size={20} />
+                      </button>
+                    </div>
+
+                    {/* اینپوت مخفی برای جایگزینی تصویر */}
+                    <input
+                      type="file"
+                      accept="image/*"
+                      id={`replace-${index}`}
+                      className="hidden"
+                      onChange={(e) => handleImageSelection(e, index)}
+                    />
+                  </div>
+                ))}
+
+                {imageFiles.length < 4 && (
+                  <label
+                    htmlFor="imageUpload"
+                    className="w-32 h-32 bg-bg rounded-lg flex flex-col items-center justify-center text-gray-500 cursor-pointer"
+                  >
+                    <FiPlus size={40} />
+                    <span className="text-sm">افزودن</span>
+                  </label>
+                )}
                 <input
-                  type="text"
-                  name="price"
-                  placeholder="قیمت"
-                  value={formData.price}
-                  onChange={handleChange}
-                  inputMode="numeric"
-                  className="w-full bg-transparent focus:outline-none"
-                  required
+                  type="file"
+                  id="imageUpload"
+                  className="hidden"
+                  onChange={handleImageSelection}
                 />
-                <span className="ml-2 text-gray-400">تومان</span>
               </div>
+            </div>
+
+            <div className="w-full space-y-5">
               <div className="grid grid-cols-2 gap-6 place-items-center">
                 <input
                   type="text"
-                  name="brand"
-                  list="brand-list"
-                  placeholder="برند"
-                  value={formData.brand}
-                  onChange={handleSaveBrand}
+                  name="name"
+                  placeholder="نام محصول"
+                  onChange={handleChange}
                   className="input"
                   required
                 />
-                <datalist id="brand-list">
-                  {brands.map((brand, index) => (
-                    <option key={index} value={brand} />
-                  ))}
-                </datalist>
+                <div className="input flex items-center justify-between">
+                  <input
+                    type="text"
+                    name="price"
+                    placeholder="قیمت"
+                    value={formData.price}
+                    onChange={handleChange}
+                    inputMode="numeric"
+                    className="w-full bg-transparent focus:outline-none"
+                    required
+                  />
+                  <span className="ml-2 text-gray-400">تومان</span>
+                </div>
+                <div className="grid grid-cols-2 gap-6 place-items-center">
+                  <input
+                    type="text"
+                    name="brand"
+                    list="brand-list"
+                    placeholder="برند"
+                    value={formData.brand}
+                    onChange={handleSaveBrand}
+                    className="input"
+                    required
+                  />
+                  <datalist id="brand-list">
+                    {brands.map((brand, index) => (
+                      <option key={index} value={brand} />
+                    ))}
+                  </datalist>
 
+                  <input
+                    type="text"
+                    name="origin"
+                    list="origin-list"
+                    placeholder="کشور سازنده"
+                    value={formData.origin}
+                    onChange={handleSaveOrigin}
+                    className="input"
+                    required
+                  />
+                  <datalist id="origin-list">
+                    {origins.map((origin, index) => (
+                      <option key={index} value={origin} />
+                    ))}
+                  </datalist>
+                </div>
                 <input
                   type="text"
-                  name="origin"
-                  list="origin-list"
-                  placeholder="کشور سازنده"
-                  value={formData.origin}
-                  onChange={handleSaveOrigin}
+                  name="quantity"
+                  placeholder="تعداد موجود"
+                  value={formData.quantity}
+                  onChange={handleChange}
+                  inputMode="numeric"
                   className="input"
                   required
                 />
-                <datalist id="origin-list">
-                  {origins.map((origin, index) => (
-                    <option key={index} value={origin} />
-                  ))}
-                </datalist>
-              </div>
-              <input
-                type="text"
-                name="quantity"
-                placeholder="تعداد موجود"
-                value={formData.quantity}
-                onChange={handleChange}
-                inputMode="numeric"
-                className="input"
-                required
-              />
-              <select
-                name="category"
-                value={formData.category}
-                onChange={handleChange}
-                className="input"
-                required
-              >
-                <option value="">انتخاب دسته‌بندی</option>
-                {categories.map((cat) => (
-                  <option key={cat._id} value={cat._id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div
-              className={`${
-                formData.features.length < 3
-                  ? 'flex items-center justify-between'
-                  : ''
-              }`}
-            >
-              <div className="grid grid-cols-3 gap-4">
-                {formData.features.map((feature, index) => (
-                  <input
-                    key={index}
-                    type="text"
-                    value={feature}
-                    onChange={(e) => handleFeatureChange(index, e.target.value)}
-                    className="input w-full"
-                    placeholder={`ویژگی ${index + 1}`}
-                  />
-                ))}
-              </div>
-              {formData.features.length < 3 && (
-                <button
-                  type="button"
-                  onClick={handleAddFeature}
-                  className="w-max flex items-center gap-2 text-sm text-gray-500 whitespace-nowrap"
+                <select
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  className="input"
+                  required
                 >
-                  افزودن ویژگی جدید
-                  <FiPlus />
-                </button>
-              )}
+                  <option value="">انتخاب دسته‌بندی</option>
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div
+                className={`${
+                  formData.features.length < 3
+                    ? 'flex items-center justify-between'
+                    : ''
+                }`}
+              >
+                <div className="grid grid-cols-3 gap-4">
+                  {formData.features.map((feature, index) => (
+                    <input
+                      key={index}
+                      type="text"
+                      value={feature}
+                      onChange={(e) =>
+                        handleFeatureChange(index, e.target.value)
+                      }
+                      className="input w-full"
+                      placeholder={`ویژگی ${index + 1}`}
+                    />
+                  ))}
+                </div>
+                {formData.features.length < 3 && (
+                  <button
+                    type="button"
+                    onClick={handleAddFeature}
+                    className="w-max flex items-center gap-2 text-sm text-gray-500 whitespace-nowrap"
+                  >
+                    افزودن ویژگی جدید
+                    <FiPlus />
+                  </button>
+                )}
+              </div>
+
+              <textarea
+                name="description"
+                placeholder="توضیحات (اختیاری)"
+                onChange={handleChange}
+                className="input min-h-44 resize-none"
+              ></textarea>
+
+              <button type="submit" className="btn-primary" disabled={loading}>
+                {loading ? 'در حال افزودن...' : 'افزودن محصول'}
+              </button>
             </div>
-
-            <textarea
-              name="description"
-              placeholder="توضیحات (اختیاری)"
-              onChange={handleChange}
-              className="input min-h-44 resize-none"
-            ></textarea>
-
-            <button type="submit" className="btn-primary" disabled={loading}>
-              {loading ? 'در حال افزودن...' : 'افزودن محصول'}
-            </button>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
-    </div>
+    </ProtectedRoute>
   )
 }

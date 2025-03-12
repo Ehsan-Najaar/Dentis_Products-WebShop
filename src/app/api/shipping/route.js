@@ -1,11 +1,21 @@
 'use server'
 
+import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
 import connectDB from '../../../../lib/db'
 import Shipping from '../../../../models/Shipping'
 
+// بررسی احراز هویت
+async function checkSession() {
+  const session = await getServerSession()
+  if (!session || !session.user || session.user.role !== 'admin') {
+    throw new Error('Unauthorized')
+  }
+  return session
+}
+
 // دریافت هزینه ارسال
-export async function getServerSideProps() {
+export async function GET(req) {
   try {
     await connectDB() // اتصال به دیتابیس
 
@@ -32,31 +42,45 @@ export async function getServerSideProps() {
 
 // تغییر هزینه ارسال
 export async function PUT(request) {
-  await connectDB()
+  try {
+    // بررسی احراز هویت
+    await checkSession()
 
-  const { shippingCost } = await request.json()
+    await connectDB()
 
-  // بررسی مقدار معتبر بودن عدد
-  if (
-    typeof shippingCost !== 'number' ||
-    isNaN(shippingCost) ||
-    shippingCost < 0
-  ) {
+    const { shippingCost } = await request.json()
+
+    // بررسی مقدار معتبر بودن عدد
+    if (
+      typeof shippingCost !== 'number' ||
+      isNaN(shippingCost) ||
+      shippingCost < 0
+    ) {
+      return NextResponse.json(
+        { message: 'Invalid shipping cost' },
+        { status: 400 }
+      )
+    }
+
+    let shippingInfo = await Shipping.findOne()
+
+    if (!shippingInfo) {
+      shippingInfo = new Shipping({ shippingCost })
+    } else {
+      shippingInfo.shippingCost = shippingCost
+    }
+
+    await shippingInfo.save()
+
+    return NextResponse.json({ message: 'Shipping cost updated successfully' })
+  } catch (error) {
+    console.error('Error updating shipping cost:', error)
+    if (error.message === 'Unauthorized') {
+      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
+    }
     return NextResponse.json(
-      { message: 'Invalid shipping cost' },
-      { status: 400 }
+      { message: 'Error updating shipping cost', error: error.message },
+      { status: 500 }
     )
   }
-
-  let shippingInfo = await Shipping.findOne()
-
-  if (!shippingInfo) {
-    shippingInfo = new Shipping({ shippingCost })
-  } else {
-    shippingInfo.shippingCost = shippingCost
-  }
-
-  await shippingInfo.save()
-
-  return NextResponse.json({ message: 'Shipping cost updated successfully' })
 }

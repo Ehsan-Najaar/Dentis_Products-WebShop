@@ -32,7 +32,7 @@ export default function About() {
       <section className="flex flex-col md:flex-row-reverse items-center gap-10 mb-16">
         <div className="md:w-1/2 flex justify-center">
           <Image
-            src="/images/question.png"
+            src="/images/question.webp"
             width={500}
             height={500}
             alt="چرا بایو نام؟"
@@ -72,7 +72,7 @@ export default function About() {
       <section className="flex flex-col md:flex-row items-center gap-10 mb-16">
         <div className="md:w-1/2 flex justify-center">
           <Image
-            src="/images/target.png"
+            src="/images/target.webp"
             width={500}
             height={500}
             alt="ماموریت ما"
@@ -95,7 +95,7 @@ export default function About() {
       <section className="text-center mb-16">
         <div className="flex justify-center mb-6">
           <Image
-            src="/images/Commitment.png"
+            src="/images/Commitment.webp"
             width={500}
             height={300}
             alt="ارزش‌ها و تعهدات ما"

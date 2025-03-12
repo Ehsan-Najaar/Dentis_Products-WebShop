@@ -23,7 +23,7 @@ export async function POST(req) {
 
     // ارسال ایمیل
     await resend.emails.send({
-      from: 'Bionam@resend.dev',
+      from: 'info@bionam.ir', // اینجا آدرس ایمیل خود را وارد کنید
       to: email,
       subject: 'کد تأیید ورود',
       html: `<p>کد تأیید شما: <strong>${otpCode}</strong></p>`,

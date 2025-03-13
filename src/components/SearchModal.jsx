@@ -10,28 +10,29 @@ export default function SearchModal({ isOpen, onClose }) {
   const [searchTerm, setSearchTerm] = useState('')
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
-  const [searched, setSearched] = useState(false) // اضافه کردن وضعیت جستجو
+  const [searched, setSearched] = useState(false)
   const pathname = usePathname()
 
+  // بستن مودال هنگام تغییر مسیر
   useEffect(() => {
     if (pathname.startsWith('/products/')) {
       onClose()
     }
   }, [pathname, onClose])
 
-  // پاک کردن ورودی جستجو و نتایج در صورت بسته شدن مودال
+  // پاک کردن وضعیت‌ها هنگام بسته شدن مودال
   useEffect(() => {
     if (!isOpen) {
       setSearchTerm('')
       setResults([])
-      setSearched(false) // پاک کردن وضعیت جستجو هنگام بستن مودال
+      setSearched(false)
     }
   }, [isOpen])
 
-  // دریافت نتایج جستجو از API زمانی که searchTerm تغییر می‌کند
+  // جستجو در محصولات
   useEffect(() => {
     if (searchTerm.trim()) {
-      setSearched(true) // فعال کردن وضعیت جستجو
+      setSearched(true)
       const fetchResults = async () => {
         setLoading(true)
         try {
@@ -48,7 +49,7 @@ export default function SearchModal({ isOpen, onClose }) {
       fetchResults()
     } else {
       setResults([])
-      setSearched(false) // غیرفعال کردن وضعیت جستجو اگر چیزی جستجو نشد
+      setSearched(false)
     }
   }, [searchTerm])
 
@@ -84,25 +85,23 @@ export default function SearchModal({ isOpen, onClose }) {
             placeholder="جستجو در محصولات ما ..."
             className="input"
             aria-label="جستجو"
+            autoComplete="off" // غیرفعال کردن autofill
+            name="search_input" // اضافه کردن name برای جلوگیری از autofill
+            id="search_input" // اضافه کردن id برای شفافیت بیشتر
           />
         </div>
 
         {/* نمایش لودینگ یا نتایج */}
         {loading ? (
           <div className="w-full grid grid-cols-4 gap-4 h-96 max-h-96 overflow-auto p-4">
-            {/* استفاده از ProductCardSkeleton به جای loader */}
-            <ProductCardSkeleton />
-            <ProductCardSkeleton />
-            <ProductCardSkeleton />
-            <ProductCardSkeleton />
-            <ProductCardSkeleton />
-            <ProductCardSkeleton />
-            <ProductCardSkeleton />
-            <ProductCardSkeleton />
+            {/* نمایش اسکللتون به عنوان لودینگ */}
+            {[...Array(8)].map((_, index) => (
+              <ProductCardSkeleton key={index} />
+            ))}
           </div>
         ) : (
           <div className="w-full grid grid-cols-4 gap-4 h-96 max-h-96 overflow-auto p-4">
-            {/* نمایش محصولات یا پیام "محصولی یافت نشد" */}
+            {/* نمایش نتایج یا پیام "محصولی یافت نشد" */}
             {searched && results.length === 0 ? (
               <div className="col-span-4 w-full h-12 flex items-center justify-center text-gray-500">
                 <p>محصولی یافت نشد.</p>

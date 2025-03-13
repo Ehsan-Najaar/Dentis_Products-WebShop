@@ -1,7 +1,7 @@
 'use client'
 import CartSummary from '@/components/CartSummary'
 import EmptyCart from '@/components/EmptyCart'
-import Loader from '@/components/Loader'
+import { Loader } from '@/components/Loader'
 import { ProductCard2 } from '@/components/ProductCards'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { useEffect, useState } from 'react'

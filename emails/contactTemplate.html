@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>پیام جدید از کاربر سایت</title>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+        color: #333333;
+      }
+      .container {
+        width: 100%;
+        max-width: 600px;
+        margin: 20px auto;
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 25px;
+        box-sizing: border-box;
+        border: 1px solid #ddd;
+      }
+      .header {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #5b52a3;
+      }
+      .header h1 {
+        font-size: 24px;
+        font-weight: bold;
+      }
+      .content {
+        margin-bottom: 30px;
+        line-height: 1.6;
+      }
+      .content p {
+        font-size: 16px;
+        margin: 10px 0;
+      }
+      .content strong {
+        color: #5b52a3;
+      }
+      .footer {
+        text-align: center;
+        font-size: 14px;
+        color: #666666;
+        margin-top: 30px;
+      }
+      .footer p {
+        margin: 5px 0;
+      }
+      .footer a {
+        color: #5b52a3;
+        text-decoration: none;
+        font-weight: bold;
+      }
+      @media (max-width: 600px) {
+        .container {
+          padding: 15px;
+        }
+        .header h1 {
+          font-size: 22px;
+        }
+        .content p {
+          font-size: 14px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <h1>پیام جدید از کاربر سایت</h1>
+      </div>
+      <div class="content">
+        <p><strong>فرستنده:</strong> ${senderEmail}</p>
+        <p><strong>موضوع:</strong> ${subject}</p>
+        <p><strong>متن پیام:</strong></p>
+        <p>${message}</p>
+      </div>
+      <div class="footer">
+        <p>این پیام از طریق فرم ارتباط با ما در سایت دریافت شده است.</p>
+      </div>
+    </div>
+  </body>
+</html>

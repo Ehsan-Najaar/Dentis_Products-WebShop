@@ -63,6 +63,7 @@ const EmailForm = ({ setEmail, setStep, setIsSignUp }) => {
           placeholder="ایمیل"
           value={emailInput}
           onChange={(e) => setEmailInput(e.target.value)}
+          onKeyDown={(e) => e.key === 'Enter' && handleSubmit()} // اینجا کلید Enter را بررسی می‌کنیم
           className="input"
         />
       </div>

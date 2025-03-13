@@ -1,8 +1,11 @@
 import cryptoRandomString from 'crypto-random-string'
+import fs from 'fs'
+import path from 'path'
 import { Resend } from 'resend'
 import OTP from '../../../../../models/OTP'
 
-const resend = new Resend('re_AUCUiqt3_JNTTXVaNoMrV1av5qYjz5JDL') // کلید API
+// دسترسی به کلید API از متغیر محیطی
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 export async function POST(req) {
   const { email } = await req.json() // دریافت ایمیل از درخواست کاربر
@@ -21,12 +24,19 @@ export async function POST(req) {
 
     console.log('OTP saved to database:', otp)
 
+    // خواندن فایل HTML
+    const htmlFilePath = path.join(process.cwd(), 'emails', 'otpTemplate.html')
+    let htmlContent = fs.readFileSync(htmlFilePath, 'utf-8')
+
+    // جایگزینی کد OTP در قالب HTML
+    htmlContent = htmlContent.replace('${otpCode}', otpCode)
+
     // ارسال ایمیل
     await resend.emails.send({
       from: 'info@bionam.ir', // اینجا آدرس ایمیل خود را وارد کنید
       to: email,
       subject: 'کد تأیید ورود',
-      html: `<p>کد تأیید شما: <strong>${otpCode}</strong></p>`,
+      html: htmlContent, // استفاده از قالب HTML خوانده شده
     })
 
     console.log('OTP sent to email:', email)

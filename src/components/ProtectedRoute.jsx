@@ -1,7 +1,7 @@
 'use client'
 
 import AuthModal from '@/components/AuthModal'
-import Loader from '@/components/Loader'
+import { Loader } from '@/components/Loader'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>کد تأیید</title>
+    <style>
+      body {
+        font-family: 'Arial', sans-serif;
+        background-color: #f4f4f9;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+      .container {
+        background-color: #ffffff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        width: 100%;
+        max-width: 400px;
+      }
+      .header {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333333;
+        margin-bottom: 20px;
+      }
+      .otp-code {
+        font-size: 30px;
+        font-weight: bold;
+        color: #5b52a3;
+        padding: 10px;
+        background-color: #e6e6f1;
+        border-radius: 8px;
+      }
+      .footer {
+        font-size: 14px;
+        color: #666666;
+        margin-top: 20px;
+      }
+      .footer a {
+        color: #5b52a3;
+        text-decoration: none;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">کد تأیید شما</div>
+      <p>کد تأیید شما جهت ورود به سیستم:</p>
+      <div class="otp-code">${otpCode}</div>
+    </div>
+  </body>
+</html>

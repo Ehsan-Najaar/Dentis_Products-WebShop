@@ -3,6 +3,7 @@
 import BottomNavbar from '@/components/BottomNavbar'
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
+import MobileHeader from '@/components/MobileHeader'
 import Toast from '@/components/Toast'
 import { SessionProvider } from 'next-auth/react'
 import { usePathname } from 'next/navigation'
@@ -16,9 +17,11 @@ export default function Layout({ children }) {
   return (
     <SessionProvider>
       <AppProvider>
-        <main className="space-y-12">
+        <main className="mt-24 lg:mt-0">
           {/* اگر در مسیر "/admin" هستیم، هدر نمایش داده نشود */}
           {!(isAdminPage || isCheckoutPage) && <Header />}
+
+          <MobileHeader />
 
           <BottomNavbar />
 

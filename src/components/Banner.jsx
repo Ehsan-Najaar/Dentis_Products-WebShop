@@ -9,12 +9,13 @@ export default function Banner() {
     >
       {/* در اینجا می‌توانید تصویر یا متن دلخواه اضافه کنید */}
       <Image
-        src={'/images/Banner.webp'}
+        src={'/images/Banner-M.webp'}
         alt="بنر"
         width={1182}
         height={600}
-        className="w-full h-full"
+        className="w-full h-full sca"
       />
+
       <button className="absolute hidden lg:flex top-60 right-10 btn-primary py-4 bg-dark">
         <span>مشاهده محصولات</span>
         <FiChevronLeft />

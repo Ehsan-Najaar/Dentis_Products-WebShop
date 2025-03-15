@@ -15,7 +15,7 @@ export default function BottomNavbar() {
   const pathname = usePathname()
 
   return (
-    <nav className="lg:hidden fixed bottom-0 left-0 w-full flex bg-lightGray border-t border-dark z-50">
+    <nav className="lg:hidden fixed bottom-0 right-0 w-full flex bg-lightGray border-t border-dark z-50">
       {navItems.map(({ href, icon: Icon, image, label }) => {
         const isActive = pathname === href
         return (

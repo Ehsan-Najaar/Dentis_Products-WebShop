@@ -100,7 +100,7 @@ const CategoriesAndProducts = () => {
       </div>
 
       {/* نمایش اسکلتون در هنگام لودینگ */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-16 lg:gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
         {loading ? (
           Array.from({ length: 8 }).map((_, index) => (
             <ProductCardSkeleton key={index} />

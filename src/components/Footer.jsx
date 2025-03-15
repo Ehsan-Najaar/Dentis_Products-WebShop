@@ -25,7 +25,7 @@ const infoLinks = [
 export default function Footer() {
   return (
     <footer
-      className="bg-lightGray text-dark py-8 pb-24 lg:pb-0 px-6 xl:px-0"
+      className="bg-lightGray text-dark py-8 pb-24 lg:pb-0 px-6 xl:px-0 mt-12"
       aria-label="پایین صفحه"
     >
       <div className="flex flex-wrap items-center justify-between gap-12 max-w-7xl mx-auto">

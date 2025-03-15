@@ -68,7 +68,7 @@ export default function Header() {
   ).size
 
   return (
-    <header className="max-w-7xl mx-auto px-6 xl:px-0 hidden lg:flex items-center justify-between pt-10">
+    <header className="max-w-7xl mx-auto px-6 xl:px-0 hidden lg:flex items-center justify-between pt-10 mb-12">
       <Link href={'/'}>
         <Image
           src="/images/logo.webp"

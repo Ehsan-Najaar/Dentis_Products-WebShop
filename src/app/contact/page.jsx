@@ -92,7 +92,7 @@ export default function Contact() {
   return (
     <>
       {loading && <Loader2 />} {/* لودر ۲ روی محتوای اصلی نمایش داده شود */}
-      <section className="max-w-7xl mx-auto relative">
+      <section className="max-w-7xl px-6 xl:px-0 mx-auto relative">
         <div className="flex flex-col lg:flex-row justify-between gap-32">
           {/* بخش اطلاعات تماس */}
           <div className="flex flex-col gap-12">

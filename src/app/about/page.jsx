@@ -2,10 +2,10 @@ import Image from 'next/image'
 
 export default function About() {
   return (
-    <div className="max-w-7xl mx-auto space-y-20">
+    <div className="max-w-7xl mx-auto px-6 xl:px-0 space-y-20">
       {/* بخش درباره بایو نام */}
       <section className="flex flex-col md:flex-row items-center gap-10 mb-16">
-        <div className="md:w-1/2 flex justify-center">
+        <div className="w-1/2 flex justify-center">
           <Image
             src="/images/logo.webp"
             width={400}

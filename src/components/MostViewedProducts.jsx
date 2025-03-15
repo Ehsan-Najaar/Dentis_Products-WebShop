@@ -45,10 +45,10 @@ export default function MostViewedProducts() {
   }
 
   return (
-    <section className="flex justify-between py-24 pr-24 bg-lightGray">
-      <div className="w-1/3 flex flex-col justify-between">
-        <h2 className="h2">محصولات پربازدید ما</h2>
-        <p className="body-text">
+    <section className="flex flex-col lg:flex-row justify-between gap-12 lg:gap-0 lg:py-24 lg:pr-24 p-6 bg-lightGray">
+      <div className="lg:w-1/3 flex lg:flex-col items-center lg:items-start justify-between">
+        <h2 className="lg:h2">محصولات پربازدید ما</h2>
+        <p className="hidden lg:block body-text">
           محصولات پربازدید ما شامل محبوب‌ترین و پرفروش‌ترین تجهیزات و مواد مصرفی
           دندانپزشکی هستند.
         </p>
@@ -80,7 +80,7 @@ export default function MostViewedProducts() {
 
         <Link
           href="/products"
-          className="w-max btn-primary rounded-full flex items-center gap-2"
+          className="hidden lg:flex  items-center gap-2 w-max btn-primary rounded-full"
         >
           دیدن محصولات بیشتر
           <FiArrowLeft size={24} />
@@ -94,7 +94,7 @@ export default function MostViewedProducts() {
           updateSwiperState(swiper)
         }}
         onSlideChange={updateSwiperState}
-        className="w-2/3"
+        className="lg:w-2/3 w-full h-72 lg:h-auto"
         loop={false}
         autoplay={{
           delay: 3500,
@@ -103,10 +103,10 @@ export default function MostViewedProducts() {
         dir="rtl"
         spaceBetween={16}
         breakpoints={{
-          0: { slidesPerView: 1.2, spaceBetween: 20 },
-          480: { slidesPerView: 2, spaceBetween: 24 },
-          768: { slidesPerView: 2.5, spaceBetween: 30 },
-          1024: { slidesPerView: 3, spaceBetween: 40 },
+          0: { slidesPerView: 2, spaceBetween: 20 },
+          480: { slidesPerView: 2.2, spaceBetween: 24 },
+          768: { slidesPerView: 3, spaceBetween: 30 },
+          1024: { slidesPerView: 2.1, spaceBetween: 40 },
           1440: { slidesPerView: 3, spaceBetween: 16 },
         }}
       >

@@ -31,25 +31,25 @@ export default function Services() {
   return (
     <section
       aria-label="خدمات وب‌سایت"
-      className="w-max flex items-center gap-6 mx-auto"
+      className="lg:w-max lg:flex grid grid-cols-2 items-center gap-6 mx-auto px-6 xl:px-0"
     >
       {services.map((service) => (
         <article
           key={service.id}
-          className="w-64 flex flex-col items-center p-4 bg-light shadow-md rounded-lg"
+          className="lg:w-64 flex flex-col gap-2 items-center lg:p-4 p-2 bg-light shadow-md rounded-lg"
           aria-labelledby={`service-title-${service.id}`}
         >
           <Image
             src={service.image}
             alt={service.alt}
-            width={110}
-            height={75}
-            className=""
-            aria-hidden="true" // این ویژگی باعث می‌شود که تصویر فقط برای نمایش باشد و به موتورهای جستجو نارسایی ایجاد نکند.
+            width={50} // اندازه پیش‌فرض کوچک‌تر
+            height={30}
+            className="lg:w-[110px] lg:h-[75px]" // در حالت‌های بزرگ‌تر، تصویر بزرگ‌تر می‌شود
+            aria-hidden="true"
           />
           <p
             id={`service-title-${service.id}`}
-            className="mt-2 text-sm font-semibold text-dark"
+            className="small-text text-dark lg:text-lg"
           >
             {service.title}
           </p>

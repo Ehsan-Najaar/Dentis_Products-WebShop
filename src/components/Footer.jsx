@@ -24,8 +24,11 @@ const infoLinks = [
 
 export default function Footer() {
   return (
-    <footer className="bg-lightGray text-dark py-8" aria-label="پایین صفحه">
-      <div className="flex flex-wrap items-center justify-between max-w-7xl mx-auto">
+    <footer
+      className="bg-lightGray text-dark py-8 pb-24 lg:pb-0 px-6 xl:px-0"
+      aria-label="پایین صفحه"
+    >
+      <div className="flex flex-wrap items-center justify-between gap-12 max-w-7xl mx-auto">
         {/* بخش اطلاعات کلی و شبکه‌های اجتماعی */}
         <section className="space-y-6 max-w-sm">
           {/* نمایش لوگوی وب‌سایت */}

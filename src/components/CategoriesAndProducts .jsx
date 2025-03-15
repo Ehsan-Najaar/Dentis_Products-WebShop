@@ -63,9 +63,9 @@ const CategoriesAndProducts = () => {
   }
 
   return (
-    <section className="max-w-7xl mx-auto space-y-6">
+    <section className="max-w-7xl mx-auto space-y-6 px-6 xl:px-0 pb-24 lg:pb-0">
       <header className="flex items-center justify-between">
-        <h2 className="h2">دسته‌بندی محصولات ما</h2>
+        <h2 className="lg:h2 h4">دسته‌بندی محصولات ما</h2>
         <Link href="/products">
           <button className="btn-primary rounded-full flex items-center gap-2">
             دیدن محصولات بیشتر
@@ -74,7 +74,7 @@ const CategoriesAndProducts = () => {
         </Link>
       </header>
 
-      <div className="relative flex items-center flex-wrap gap-6 mb-6 border-b pb-2">
+      <div className="relative flex items-center gap-6 mb-6 border-b p-4 overflow-x-auto whitespace-nowrap md:flex-wrap">
         {categories.map((category) => (
           <span
             key={category._id}
@@ -100,14 +100,21 @@ const CategoriesAndProducts = () => {
       </div>
 
       {/* نمایش اسکلتون در هنگام لودینگ */}
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-16 lg:gap-6">
         {loading ? (
           Array.from({ length: 8 }).map((_, index) => (
             <ProductCardSkeleton key={index} />
           ))
         ) : filteredProducts.length > 0 ? (
-          filteredProducts.map((product) => (
-            <ProductCard1 key={product._id} product={product} />
+          filteredProducts.map((product, index) => (
+            <div
+              key={product._id}
+              className={`${
+                index === 0 || index === 1 ? 'mt-0' : 'mt-12 lg:mt-0'
+              } ${index === 2 ? 'md:mt-0' : ''}`}
+            >
+              <ProductCard1 product={product} />
+            </div>
           ))
         ) : (
           <p className="col-span-4 text-center text-gray-500">

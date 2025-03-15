@@ -50,14 +50,14 @@ const ProductCard1 = ({ product }) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-between bg-light rounded-2xl w-72 h-80">
+    <div className="flex flex-col items-center justify-between bg-light lg:rounded-2xl rounded-t-2xl w-48 h-40 lg:w-72 lg:h-80">
       <Link
         href={`/products/${generateSlug(product.name)}-${generateSlug(
           product.brand
         )}`}
         className="w-full"
       >
-        <figure className="w-full h-48 flex items-center justify-center rounded-2xl overflow-hidden mt-6">
+        <figure className="w-full lg:h-48 h-32 flex items-center justify-center rounded-2xl overflow-hidden mt-6">
           <Image
             src={product.images[0]}
             alt={product.name}
@@ -69,9 +69,9 @@ const ProductCard1 = ({ product }) => {
         </figure>
       </Link>
 
-      <div className="w-full flex justify-between items-center bg-accent p-2 rounded-xl">
+      <div className="w-full flex flex-col lg:flex-row justify-between gap-2 lg:items-center bg-accent p-2 rounded-xl">
         <section className="space-y-2">
-          <h3 className="body-text max-w-[184px] truncate">
+          <h3 className="lg:body-text text-[14px] w-44 lg:max-w-[184px] truncate">
             <Link
               href={`/products/${generateSlug(product.name)}-${generateSlug(
                 product.brand
@@ -92,7 +92,7 @@ const ProductCard1 = ({ product }) => {
           <button
             aria-label={`افزودن ${product.name} به سبد خرید`}
             onClick={addToCart}
-            className="w-max p-2 bg-light rounded-full flex items-center justify-center"
+            className="hidden lg:flex  items-center justify-center w-max p-2 bg-light rounded-full"
             disabled={loading || inCart}
           >
             {/* اگر بارگذاری سبد خرید یا بارگذاری در حال انجام است، آیکون سبد خرید را نمایش می‌دهیم */}

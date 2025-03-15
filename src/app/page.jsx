@@ -8,7 +8,7 @@ import Services from '@/components/Services'
 
 export default function Home() {
   return (
-    <main className="space-y-24">
+    <main className="lg:space-y-24 space-y-12">
       {/* بنر صفحه */}
       <section aria-label="بنر اصلی">
         <Banner />

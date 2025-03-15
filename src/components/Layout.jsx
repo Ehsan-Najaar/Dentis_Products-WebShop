@@ -1,5 +1,6 @@
 'use client'
 
+import BottomNavbar from '@/components/BottomNavbar'
 import Footer from '@/components/Footer'
 import Header from '@/components/Header'
 import Toast from '@/components/Toast'
@@ -18,6 +19,8 @@ export default function Layout({ children }) {
         <main className="space-y-12">
           {/* اگر در مسیر "/admin" هستیم، هدر نمایش داده نشود */}
           {!(isAdminPage || isCheckoutPage) && <Header />}
+
+          <BottomNavbar />
 
           {/* نمایش محتوا صفحات دیگر */}
           {children}

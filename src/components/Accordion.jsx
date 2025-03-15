@@ -31,11 +31,11 @@ const FAQAccordion = () => {
 
   return (
     <section
-      className="max-w-7xl mx-auto space-y-6"
+      className="max-w-7xl mx-auto space-y-6 px-6 xl:px-0"
       aria-labelledby="faq-section"
     >
       {/* عنوان بخش */}
-      <h2 className="h2" id="faq-section">
+      <h2 className="lg:h2 h4" id="faq-section">
         سوالات متداول
       </h2>
 
@@ -75,7 +75,7 @@ const FAQAccordion = () => {
               aria-labelledby={`question-${index}`} // برای ارتباط پاسخ با سوال
             >
               {/* دایره توپر قبل از متن پاسخ */}
-              <div className="w-3 h-3 rounded-full bg-accent mt-2"></div>
+              <div className="sm:w-3 w-5 h-3 rounded-full bg-accent mt-2"></div>
               <p>{faq.answer}</p>
             </div>
           </div>

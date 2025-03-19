@@ -60,6 +60,11 @@ const PasswordForm = ({ email, isSignUp, setStep, onClose }) => {
         <input
           type="password"
           placeholder="رمز عبور"
+          onKeyDown={(e) => {
+            if (e.key === 'Enter') {
+              handleSubmit()
+            }
+          }}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="input"

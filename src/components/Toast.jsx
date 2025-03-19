@@ -8,7 +8,7 @@ const Toast = () => {
 
   return (
     <div
-      className={`fixed bg-light/70 backdrop-blur-sm bottom-4 right-6 transform px-4 py-2 rounded-md shadow-lg text-dark w-80`}
+      className={`fixed bg-light/70 backdrop-blur-sm top-24 left-1/2 -translate-x-1/2 lg:bottom-4 lg:right-6 transform px-4 py-2 rounded-md shadow-lg text-dark w-80 h-max lg:w-auto lg:left-auto lg:translate-x-0 lg:top-auto`}
       style={{ zIndex: 9999 }}
     >
       {/* نمایش آیکون مربوطه */}

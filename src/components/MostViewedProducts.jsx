@@ -103,7 +103,7 @@ export default function MostViewedProducts() {
         dir="rtl"
         spaceBetween={16}
         breakpoints={{
-          0: { slidesPerView: 2, spaceBetween: 20 },
+          0: { slidesPerView: 2.1, spaceBetween: 20 },
           480: { slidesPerView: 2.2, spaceBetween: 24 },
           768: { slidesPerView: 3, spaceBetween: 30 },
           1024: { slidesPerView: 2.1, spaceBetween: 40 },

@@ -26,7 +26,7 @@ const ProtectedRoute = ({ children }) => {
   // اگر کاربر لاگین نکرده باشد، نمایش مودال ورود
   if (!session) {
     return (
-      <div className="absolute grid place-items-center top-0 right-0 w-screen bg-bg min-h-screen">
+      <div className="absolute grid place-items-center top-0 right-0 w-screen bg-bg min-h-[calc(100vh+200px)] lg:min-h-screen">
         <div className="flex items-center gap-4">
           <button
             onClick={() => setAuthModalOpen(true)}

@@ -1,5 +1,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { useEffect } from 'react'
 import { FaTelegramPlane, FaWhatsapp } from 'react-icons/fa'
 import { FiInstagram, FiMail, FiSmartphone } from 'react-icons/fi'
 
@@ -23,6 +25,12 @@ const infoLinks = [
 ]
 
 export default function Footer() {
+  const pathname = usePathname()
+
+  useEffect(() => {
+    window.scrollTo(0, 0)
+  }, [pathname])
+
   return (
     <footer className="bg-lightGray text-dark py-8 pb-24 lg:pb-0 px-6 xl:px-0 mt-12">
       <div className="flex flex-wrap items-start justify-between gap-12 max-w-7xl mx-auto">

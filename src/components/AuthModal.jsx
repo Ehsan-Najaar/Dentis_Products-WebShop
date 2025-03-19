@@ -44,7 +44,7 @@ const AuthModal = ({ isOpen, onClose }) => {
       style={{ margin: 0 }}
     >
       <div
-        className="relative bg-light p-6 rounded-lg shadow-lg w-1/4"
+        className="relative bg-light p-6 rounded-lg shadow-lg lg:w-1/4"
         onClick={(e) => e.stopPropagation()} // جلوگیری از بسته شدن هنگام کلیک روی مودال
       >
         {/* دکمه بستن */}

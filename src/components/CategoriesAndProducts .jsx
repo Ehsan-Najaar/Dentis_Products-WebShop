@@ -38,7 +38,7 @@ const CategoriesAndProducts = () => {
 
         setCategories(formattedCategories)
         setProducts(formattedProducts)
-        setFilteredProducts(formattedProducts.slice(0, 1))
+        setFilteredProducts(formattedProducts.slice(0, 8))
       } catch (error) {
         console.error('خطا در دریافت داده‌ها:', error)
       } finally {
@@ -110,7 +110,7 @@ const CategoriesAndProducts = () => {
             <div
               key={product._id}
               className={`${
-                index === 0 || index === 1 ? 'mt-0' : 'mt-12 lg:mt-0'
+                index === 0 || index === 1 ? 'mt-0' : 'mt-24 lg:mt-0'
               } ${index === 2 ? 'md:mt-0' : ''}`}
             >
               <ProductCard1 product={product} />

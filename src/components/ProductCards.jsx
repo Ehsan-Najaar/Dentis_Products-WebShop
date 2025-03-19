@@ -55,9 +55,9 @@ const ProductCard1 = ({ product }) => {
         href={`/products/${generateSlug(product.name)}-${generateSlug(
           product.brand
         )}`}
-        className=""
+        className="w-full"
       >
-        <figure className="w-44 lg:h-48 h-32 flex items-center justify-center rounded-2xl overflow-hidden mt-6">
+        <figure className="w-full lg:h-48 h-32 flex items-center justify-center rounded-2xl overflow-hidden mt-6">
           <Image
             src={product.images[0]}
             alt={product.name}
@@ -71,7 +71,7 @@ const ProductCard1 = ({ product }) => {
 
       <div className="w-full flex flex-col lg:flex-row justify-between gap-2 lg:items-center bg-accent p-2 rounded-xl">
         <section className="space-y-2">
-          <h3 className="lg:body-text text-[14px] w-40 lg:max-w-[184px] truncate">
+          <h3 className="lg:body-text text-[14px] w-36 lg:max-w-[184px] truncate">
             <Link
               href={`/products/${generateSlug(product.name)}-${generateSlug(
                 product.brand

@@ -142,7 +142,7 @@ export default function Contact() {
           </div>
 
           {/* بخش فرم تماس */}
-          <div className="bg-lightGray text-dark p-8 rounded-lg shadow-lg w-full lg:w-2/3">
+          <div className="bg-lightGray text-dark lg:p-8 p-4 rounded-lg shadow-lg w-full lg:w-2/3">
             <h2 className="mb-6 text-4xl font-extrabold text-center">
               پیامتو ارسال کن
             </h2>

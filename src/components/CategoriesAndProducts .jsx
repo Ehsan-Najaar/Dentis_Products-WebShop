@@ -38,7 +38,7 @@ const CategoriesAndProducts = () => {
 
         setCategories(formattedCategories)
         setProducts(formattedProducts)
-        setFilteredProducts(formattedProducts.slice(0, 8))
+        setFilteredProducts(formattedProducts.slice(0, 1))
       } catch (error) {
         console.error('خطا در دریافت داده‌ها:', error)
       } finally {
@@ -67,9 +67,9 @@ const CategoriesAndProducts = () => {
       <header className="flex items-center justify-between">
         <h2 className="lg:h2 h4">دسته‌بندی محصولات ما</h2>
         <Link href="/products">
-          <button className="btn-primary rounded-full flex items-center gap-2">
-            دیدن محصولات بیشتر
-            <FiArrowLeft size={24} />
+          <button className="btn-primary rounded-full text-sm whitespace-nowrap">
+            <span>مشاهده همه</span>
+            <FiArrowLeft size={20} />
           </button>
         </Link>
       </header>

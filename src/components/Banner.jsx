@@ -9,7 +9,7 @@ export default function Banner() {
     >
       {/* در اینجا می‌توانید تصویر یا متن دلخواه اضافه کنید */}
       <Image
-        src={'/images/Banner-M.webp'}
+        src={'/images/Banner.webp'}
         alt="بنر"
         width={1182}
         height={600}

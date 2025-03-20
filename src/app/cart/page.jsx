@@ -84,14 +84,14 @@ export default function CartPage() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-7xl mx-auto flex gap-12">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 px-6 lg:px-0">
         {/* ✅ اگر سبد خرید خالی بود، فقط عکس نمایش داده شود */}
         {cart.length === 0 ? (
           <EmptyCart />
         ) : (
           <>
-            <section className="w-3/4">
-              <div className="flex-1 space-y-4">
+            <section className="lg:w-3/4">
+              <div className="space-y-4">
                 {cart.map((product) => (
                   <ProductCard2
                     key={product.productId._id}
@@ -103,7 +103,7 @@ export default function CartPage() {
               </div>
             </section>
 
-            <section className="w-1/4 h-fit sticky top-4">
+            <section className="lg:w-1/4 h-fit sticky top-4">
               <CartSummary total={total} shippingCost={shippingCost} />
             </section>
           </>

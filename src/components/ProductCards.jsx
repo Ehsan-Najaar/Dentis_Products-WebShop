@@ -129,78 +129,82 @@ const ProductCard1 = ({ product }) => {
 const ProductCard2 = ({ product, onUpdateQuantity, onRemove }) => {
   return (
     <div className="flex rounded-lg overflow-hidden bg-light">
-      <div className="w-[90%] lg:w-[95%] flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-neutral rounded-lg shadow-md p-4">
+      <div className="w-full md:w-[90%] lg:w-[95%] flex flex-col md:flex-row md:items-center justify-between gap-4 bg-neutral rounded-lg shadow-md p-4">
         {/* بخش تصویر و جزئیات محصول */}
-        <div className="flex items-center gap-6">
+        <div className="flex items-center gap-4 sm:gap-6 w-full">
           <Link
             href={`/product/${product.productId._id}`}
-            className="relative w-32 h-32"
+            className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-32 md:h-32"
           >
-            <figure className="flex items-center justify-center rounded-2xl overflow-hidden mt-6">
+            <figure className="flex items-center justify-center rounded-2xl overflow-hidden">
               <Image
                 src={product?.productId?.images?.[0] || '/default-image.jpg'}
                 alt={product?.productId?.name || 'بدون نام'}
                 layout="fill"
-                className="w-full h-full object-center object-contain"
+                className="object-center object-contain"
               />
             </figure>
           </Link>
-          <div className="space-y-6">
-            {/* نمایش نام و دسته‌بندی محصول */}
-            <section>
-              <Link
-                href={`/category/${product.productId.category?._id}`}
-                className="w-52 body-text block"
-              >
-                {product.productId.name}
-              </Link>
-            </section>
-          </div>
-        </div>
 
-        <div className="flex items-center gap-8">
-          {/* قیمت محصول */}
-          <span className="hidden lg:block text-dark">
-            {product.productId.price.toLocaleString('en-US')} تومان
-          </span>
-
-          {/* دکمه‌های تغییر تعداد */}
-          <div className="flex items-center">
-            <button
-              onClick={() =>
-                onUpdateQuantity(product.productId._id, product.quantity - 1)
-              }
-              className="px-2 py-2 text-gray-600 border-2 border-gray-300 rounded-lg"
+          <div className="flex flex-col justify-between w-full">
+            <Link
+              href={`/category/${product.productId.category?._id}`}
+              className="block text-sm sm:text-base font-semibold"
             >
-              <FiMinus />
-            </button>
-            <span className="w-[50px] text-center text-gray-700">
-              {product.quantity}
-            </span>
-            <button
-              onClick={() =>
-                onUpdateQuantity(product.productId._id, product.quantity + 1)
-              }
-              className="px-2 py-2 text-gray-600 border-2 border-gray-300 rounded-lg"
-            >
-              <FiPlus />
-            </button>
-          </div>
+              {product.productId.name}
+            </Link>
 
-          {/* نمایش قیمت کل */}
-          <span className="w-[120px] text-nowrap text-primary">
-            {(product.productId.price * product.quantity).toLocaleString(
-              'en-US'
-            )}{' '}
-            تومان
-          </span>
+            <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between mt-2">
+              {/* قیمت محصول */}
+              <span className="text-dark text-xs sm:text-sm">
+                {product.productId.price.toLocaleString('en-US')} تومان
+              </span>
+
+              {/* دکمه‌های تغییر تعداد */}
+              <div className="w-max flex items-center border border-gray-300 rounded-lg">
+                <button
+                  onClick={() =>
+                    onUpdateQuantity(
+                      product.productId._id,
+                      product.quantity - 1
+                    )
+                  }
+                  className="px-2 py-2 text-gray-600"
+                >
+                  <FiMinus />
+                </button>
+                <span className="w-10 text-center text-gray-700">
+                  {product.quantity}
+                </span>
+                <button
+                  onClick={() =>
+                    onUpdateQuantity(
+                      product.productId._id,
+                      product.quantity + 1
+                    )
+                  }
+                  className="px-2 py-2 text-gray-600"
+                >
+                  <FiPlus />
+                </button>
+              </div>
+
+              {/* نمایش قیمت کل */}
+              <span className="text-primary text-xs sm:text-base font-semibold sm:ml-4">
+                {(product.productId.price * product.quantity).toLocaleString(
+                  'en-US'
+                )}{' '}
+                تومان
+              </span>
+            </div>
+          </div>
         </div>
       </div>
 
       {/* دکمه حذف محصول */}
       <button
         onClick={() => onRemove(product.productId._id)}
-        className="w-[10%] lg:w-[5%] grid place-items-center text-neutral bg-lightGray hover:bg-[#FF0000] hover:text-light transition-all duration-300"
+        className="md:w-[10%] w-[15%] grid place-items-center text-neutral bg-lightGray hover:bg-red-600 hover:text-light transition-all duration-300"
       >
         <FiTrash2 size={24} />
       </button>

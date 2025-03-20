@@ -24,7 +24,7 @@ export default function MobileHeader() {
   }, [pathname])
 
   return (
-    <header className="w-full lg:hidden fixed top-0 right-0 flex items-center justify-between p-2 bg-lightGray shadow-md z-40">
+    <header className="w-full lg:hidden fixed top-0 right-0 flex items-center justify-between py-2 px-6 bg-lightGray shadow-md z-40">
       <section className="flex items-center gap-4">
         <Image
           src="/images/logo.webp"
@@ -46,7 +46,7 @@ export default function MobileHeader() {
           onClick={() => setIsOpen(false)}
         >
           <div
-            className="w-64 bg-bg h-full shadow-lg p-2 fixed top-0 left-0 flex flex-col"
+            className="w-64 bg-bg h-full shadow-lg py-2 px-6 fixed top-0 left-0 flex flex-col"
             onClick={(e) => e.stopPropagation()}
           >
             <button onClick={() => setIsOpen(false)} className="self-end p-2">

@@ -17,7 +17,7 @@ export default function CartSummary({ total, shippingCost }) {
   }
 
   return (
-    <div className="bg-light rounded-xl shadow-md p-4 space-y-6">
+    <div className="bg-light rounded-xl shadow-md p-6 lg:p-4 space-y-6">
       <div className="space-y-4">
         <h3 className="h3 text-center">مجموع سبد خرید شما</h3>
         <p className="h3 text-center font-semibold">

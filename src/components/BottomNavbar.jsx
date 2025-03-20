@@ -22,8 +22,8 @@ export default function BottomNavbar() {
           <Link
             key={href}
             href={href}
-            className={`flex flex-col gap-1 items-center justify-center flex-1 p-2 ${
-              isActive ? 'bg-light text-primary' : 'opacity-55 text-dark'
+            className={`flex flex-col gap-1 items-center justify-center flex-1 p-2 text-dark ${
+              isActive ? 'bg-light' : 'opacity-75'
             }`}
           >
             {image ? (

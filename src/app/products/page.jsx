@@ -88,9 +88,9 @@ export default function ProductsPage() {
   )
 
   return (
-    <div className="max-w-7xl mx-auto flex gap-12">
+    <div className="max-w-7xl mx-auto flex gap-12 px-6 lg:px-0">
       {/* سایدبار فیلترها */}
-      <section className="w-1/4 h-fit sticky top-4">
+      <section className="hidden lg:block w-1/4 h-fit sticky top-4">
         <FilterSidebar
           categories={categories}
           brands={brands} // ارسال برندها به فیلتر سایدبار
@@ -102,7 +102,7 @@ export default function ProductsPage() {
       </section>
 
       {/* لیست محصولات */}
-      <section className="w-3/4 space-y-4">
+      <section className="w-full lg:w-3/4 space-y-4 pb-24 lg:pb-0">
         <Toolbar
           sortOptions={[
             { label: 'ارزان‌ترین', value: 'price-asc' },

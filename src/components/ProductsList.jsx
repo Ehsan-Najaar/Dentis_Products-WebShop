@@ -54,7 +54,7 @@ export default function ProductsList({ filters, selectedSort }) {
   }, [filters, selectedSort]) // ارسال دوباره درخواست به API در صورت تغییر فیلترها یا مرتب‌سازی
 
   return (
-    <div className="grid place-items-center grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+    <div className="grid place-items-center grid-cols-2 md:grid-cols-3 gap-4">
       {loading ? (
         Array.from({ length: 6 }).map((_, index) => (
           <ProductCardSkeleton key={index} />
@@ -62,8 +62,15 @@ export default function ProductsList({ filters, selectedSort }) {
       ) : error ? (
         <p className="text-center text-red-500 col-span-3">{error}</p>
       ) : products.length > 0 ? (
-        products.map((product) => (
-          <ProductCard1 key={product._id} product={product} />
+        products.map((product, index) => (
+          <div
+            key={product._id}
+            className={`${
+              index === 0 || index === 1 ? 'mt-0' : 'mt-24 lg:mt-0'
+            } ${index === 2 ? 'md:mt-0' : ''}`}
+          >
+            <ProductCard1 product={product} />
+          </div>
         ))
       ) : (
         <p className="text-center text-gray-500 col-span-3">محصولی یافت نشد.</p>

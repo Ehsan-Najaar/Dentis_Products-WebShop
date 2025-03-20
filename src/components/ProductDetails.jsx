@@ -108,7 +108,7 @@ export default function ProductDetails({
           </div>
 
           {/* تصاویر کوچک محصول */}
-          <div className="flex lg:flex-col items-center justify-center lg:justify-start gap-4">
+          <div className="flex lg:flex-col items-center justify-center lg:justify-start gap-2 lg:gap-4 px-6 lg:px-0">
             {product?.images?.map((image, index) => (
               <div
                 key={index}
@@ -153,7 +153,7 @@ export default function ProductDetails({
                 </Link>
               </li>
               <FiChevronLeft />
-              <li>{product.name}</li>
+              <li className="hidden lg:block">{product.name}</li>
             </ol>
           </nav>
 
@@ -177,7 +177,7 @@ export default function ProductDetails({
                 <FiList size={24} />
                 <p className="h3">ویژگی‌ها :</p>
               </div>
-              <ul className="grid grid-cols-2 gap-4 pl-5 text-gray-500">
+              <ul className="grid lg:grid-cols-2 gap-4 pl-5 text-gray-500">
                 {product?.features?.map((feature, index) => (
                   <li key={index} className="bg-bg rounded-lg p-2 truncate">
                     {feature}
@@ -195,9 +195,9 @@ export default function ProductDetails({
           </section>
 
           {/* قیمت و افزودن به سبد خرید */}
-          <section className="flex items-end justify-between mt-4">
+          <section className="flex flex-col gap-6 lg:gap-0 lg:flex-row items-center lg:items-end justify-center lg:justify-between mt-4">
             <div className="text-gray-800">
-              <span className="text-lg">قیمت</span>
+              <span className="hidden lg:block text-lg">قیمت</span>
               <p className="h3 font-semibold">
                 {calculateTotalPrice().toLocaleString('en-US')} تومان
               </p>

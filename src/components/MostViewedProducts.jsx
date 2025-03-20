@@ -106,7 +106,7 @@ export default function MostViewedProducts() {
           0: { slidesPerView: 2.1, spaceBetween: 20 },
           480: { slidesPerView: 2.2, spaceBetween: 24 },
           768: { slidesPerView: 3, spaceBetween: 30 },
-          1024: { slidesPerView: 2.1, spaceBetween: 40 },
+          1024: { slidesPerView: 2.4, spaceBetween: 40 },
           1440: { slidesPerView: 3, spaceBetween: 16 },
         }}
       >

@@ -46,11 +46,14 @@ export default function SingleProductPage() {
 
         setProduct(matchedProduct)
 
-        const filteredRelatedProducts = allProducts.filter(
-          (p) =>
-            p.category === matchedProduct.category &&
-            generateProductSlug(p) !== slug
-        )
+        const filteredRelatedProducts = allProducts
+          .filter(
+            (p) =>
+              p.category === matchedProduct.category &&
+              generateProductSlug(p) !== slug
+          )
+          .slice(0, 8) // محدود کردن به حداکثر 8 محصول
+
         setRelatedProducts(filteredRelatedProducts)
       } catch (error) {
         console.error('❌ خطا در دریافت محصول:', error)

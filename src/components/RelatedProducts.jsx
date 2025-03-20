@@ -30,9 +30,9 @@ const RelatedProducts = ({ relatedProducts }) => {
   }
 
   return (
-    <div className="relative h-max">
+    <div className="relative flex flex-col gap-12">
       <div className="flex items-center justify-between lg:mb-8 px-4 md:px-0">
-        <h3 className="h3">محصولات مرتبط</h3>
+        <h3 className="h4 lg:h3">محصولات مرتبط</h3>
 
         {/* دکمه‌های کنترلی اسلایدر */}
         <div className="w-max">
@@ -68,11 +68,11 @@ const RelatedProducts = ({ relatedProducts }) => {
           updateSwiperState(swiper)
         }}
         onSlideChange={updateSwiperState}
-        className="w-full lg:h-[340px]"
+        className="w-full h-72 lg:h-80"
         loop={false}
         autoplay={{ delay: 3500, disableOnInteraction: false }}
         breakpoints={{
-          0: { slidesPerView: 1.5, spaceBetween: 10 },
+          0: { slidesPerView: 2, spaceBetween: 10 },
           480: { slidesPerView: 2.4, spaceBetween: 16 },
           768: { slidesPerView: 3, spaceBetween: 16 },
           1024: { slidesPerView: 3.5, spaceBetween: 24 },

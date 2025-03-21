@@ -13,7 +13,7 @@ const ProductCardSkeleton = () => {
 
 const AdminProductCardSkeleton = () => {
   return (
-    <div className="w-[1061px] h-[112px] bg-light p-4 flex items-center justify-between gap-4 animate-pulse rounded-lg">
+    <div className="w-[1018px] h-[112px] bg-light p-4 flex items-center justify-between gap-4 animate-pulse rounded-lg">
       {/* تصویر محصول */}
       <div className="w-[80px] h-[80px] bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] animate-[loading_1.5s_infinite_linear] rounded-md"></div>
 

@@ -4,7 +4,9 @@ import DashboardPanelNavbar from '@/components/DashboardPanelNavbar'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import UserInformaitno from '@/components/UserInformaitno'
 import { useSession } from 'next-auth/react'
+import Link from 'next/link'
 import { useEffect, useState } from 'react'
+import { FiChevronLeft } from 'react-icons/fi'
 
 export default function EditAccount() {
   const { data: session } = useSession()
@@ -29,8 +31,17 @@ export default function EditAccount() {
 
   return (
     <ProtectedRoute>
-      <div className="max-w-7xl mx-auto flex gap-12">
+      <div className="max-w-7xl mx-auto lg:flex gap-12 px-6 lg:px-0">
         <DashboardPanelNavbar />
+
+        {/* هدر موبایل */}
+        <div className="lg:hidden flex items-center justify-between bg-lightGray rounded-lg shadow p-2 mb-4">
+          <h2 className="h4">ویرایش اطلاعات</h2>
+          <Link href="/dashboard">
+            <FiChevronLeft size={32} />
+          </Link>
+        </div>
+
         <UserInformaitno
           userInfo={userInfo}
           isLoading={isLoading}

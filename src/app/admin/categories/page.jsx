@@ -88,10 +88,10 @@ export default function Category() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen flex p-6 gap-8">
+      <div className="min-h-screen flex p-6 gap-12">
         <AdminPanelNavbar />
 
-        <div className="w-4/5 h-[710px] p-4 flex bg-lightGray rounded-2xl shadow-lg">
+        <div className="w-4/5 h-[750px] p-4 flex bg-lightGray rounded-2xl shadow-lg">
           <section className="w-1/2 p-4 pl-6 space-y-4">
             <h3 className="h3 text-center">لیست دسته بندی های</h3>
             <div className="flex items-center justify-between px-4 py-2 bg-light shadow-sm rounded-full">

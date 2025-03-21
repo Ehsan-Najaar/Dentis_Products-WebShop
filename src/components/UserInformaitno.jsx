@@ -74,7 +74,7 @@ export default function UserInformation({ userInfo, isLoading, error }) {
 
   if (isLoading) {
     return (
-      <div className="h-auto w-4/5 bg-lightGray text-dark rounded-2xl shadow-lg grid place-items-center">
+      <div className="h-96 lg:h-auto lg:w-4/5 bg-lightGray text-dark rounded-2xl shadow-lg grid place-items-center">
         <span className="loader"></span>
       </div>
     )
@@ -82,16 +82,16 @@ export default function UserInformation({ userInfo, isLoading, error }) {
 
   if (error) {
     return (
-      <div className="h-auto w-4/5 bg-lightGray text-dark rounded-2xl flex flex-col items-center p-6 shadow-lg gap-4">
+      <div className="h-96 lg:h-auto lg:w-4/5 bg-lightGray text-dark rounded-2xl flex flex-col items-center p-6 shadow-lg gap-4">
         <p>{error}</p>
       </div>
     )
   }
 
   return (
-    <div className="h-auto w-4/5 bg-lightGray text-dark rounded-2xl flex flex-col items-center p-6 shadow-lg gap-4">
+    <div className="h-auto lg:w-4/5 bg-lightGray text-dark rounded-2xl flex flex-col items-center p-6 shadow-lg gap-4">
       <form onSubmit={handleSubmit} className="w-full">
-        <div className="w-full grid grid-cols-2 gap-4">
+        <div className="w-full grid lg:grid-cols-2 gap-4">
           <input
             type="text"
             className="input"
@@ -120,7 +120,7 @@ export default function UserInformation({ userInfo, isLoading, error }) {
           />
         </div>
 
-        <div className="relative flex gap-4 mt-4">
+        <div className="relative flex flex-col lg:flex-row gap-4 mt-4">
           <input
             type="password"
             className="input"
@@ -130,7 +130,7 @@ export default function UserInformation({ userInfo, isLoading, error }) {
             onChange={handleChange}
             disabled={isLoading}
           />
-          <small className="absolute right-2 -bottom-6 small-text text-yellow-600">
+          <small className="absolute right-2 lg:-bottom-6 -bottom-10 small-text text-yellow-600">
             اگر می‌خواهید رمز عبور خود را عوض کنید، این فیلد و فیلد بعدی را پر
             کنید.
           </small>
@@ -147,7 +147,7 @@ export default function UserInformation({ userInfo, isLoading, error }) {
 
         <button
           type="submit"
-          className="btn-primary mt-20"
+          className="btn-primary w-full lg:w-max mt-20"
           disabled={isLoading}
         >
           ذخیره تغییرات

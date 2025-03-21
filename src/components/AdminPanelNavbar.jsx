@@ -34,7 +34,7 @@ const AdminPanelNavbar = () => {
   ]
 
   return (
-    <div className="min-h-full w-1/5 bg-lightGray text-dark rounded-2xl flex flex-col items-center p-4 shadow-lg">
+    <div className="lg:min-h-full w-full lg:w-1/5 bg-lightGray text-dark rounded-2xl flex flex-col items-center p-4 shadow-lg">
       {/* لوگو */}
       <Link href={'/'} className="text-lg font-bold mb-8">
         <Image

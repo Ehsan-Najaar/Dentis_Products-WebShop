@@ -130,7 +130,7 @@ const UserAddresses = ({ userId }) => {
     <div className="w-full">
       {/* نمایش عنوان و دکمه افزودن آدرس */}
       <div className="flex items-center justify-between mb-4">
-        <h2 className="h3">
+        <h2 className="hidden lg:inline-block h3">
           {pathname.startsWith('/dashboard/addresses') ? (
             <span>آدرس های من</span>
           ) : (
@@ -141,7 +141,7 @@ const UserAddresses = ({ userId }) => {
         <button
           onClick={openModalForAdd}
           disabled={addresses.length >= 3}
-          className={`btn-outline flex items-center gap-2 ${
+          className={`btn-outline w-full lg:w-max flex items-center justify-center gap-2 ${
             addresses.length >= 3 ? 'opacity-50 cursor-not-allowed' : ''
           }`}
         >
@@ -150,7 +150,9 @@ const UserAddresses = ({ userId }) => {
       </div>
 
       {/* نمایش لیست آدرس‌ها */}
-      {addresses.length > 0 ? (
+      {addresses === null ? (
+        <p className="loader"></p>
+      ) : addresses.length > 0 ? (
         <ul
           className={`${
             pathname.startsWith('/dashboard/addresses')
@@ -166,7 +168,7 @@ const UserAddresses = ({ userId }) => {
                   setSelectedAddress(address)
                 }
               }}
-              className={`p-4 rounded flex justify-between items-center border-2  ${
+              className={`p-4 rounded flex flex-col lg:flex-row justify-between items-center border-2 ${
                 !pathname.startsWith('/dashboard/addresses')
                   ? 'cursor-pointer'
                   : ''
@@ -191,11 +193,17 @@ const UserAddresses = ({ userId }) => {
                   <p>{address.postalCode}</p>
                 </div>
               </div>
-              <div className="flex flex-col gap-8 text-gray-500">
-                <button onClick={() => openModalForEdit(address)}>
+              <div className="w-full lg:w-max flex justify-end gap-2 lg:flex-col lg:gap-8 mt-6 text-gray-500">
+                <button
+                  onClick={() => openModalForEdit(address)}
+                  className="p-2 bg-bg rounded"
+                >
                   <Edit size={24} />
                 </button>
-                <button onClick={() => confirmDeleteAddress(address._id)}>
+                <button
+                  onClick={() => confirmDeleteAddress(address._id)}
+                  className="p-2 bg-bg rounded"
+                >
                   <Trash2 size={24} />
                 </button>
               </div>
@@ -212,7 +220,7 @@ const UserAddresses = ({ userId }) => {
           className="fixed inset-0 bg-black/50 flex justify-center items-center z-50"
           style={{ margin: 0 }}
         >
-          <div className="bg-light p-6 rounded-lg shadow-lg w-96 relative">
+          <div className="bg-light p-6 rounded-lg shadow-lg w-80 md:w-96 relative">
             {/* دکمه بستن */}
             <button
               onClick={() => setIsModalOpen(false)}

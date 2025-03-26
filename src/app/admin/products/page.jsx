@@ -91,7 +91,7 @@ export default function ProductsManagment() {
     <ProtectedRoute>
       <div className="min-h-screen h-[710px] flex p-6 gap-12">
         <AdminPanelNavbar />
-        <div className="w-4/5 p-4 bg-lightGray rounded-2xl shadow-lg">
+        <div className="lg:w-4/5 p-4 bg-lightGray rounded-2xl shadow-lg">
           <div className="flex items-center justify-between mb-4">
             <div className="w-56 flex items-center gap-2">
               <h2 className="h3">لیست محصولات</h2>
@@ -116,7 +116,7 @@ export default function ProductsManagment() {
           </div>
 
           <div className="flex items-center justify-between mt-16 mb-6">
-            <h3 className="h3">فیلتر و مرتب‌سازی محصولات</h3>
+            <h3 className="hidden lg:block h3">فیلتر و مرتب‌سازی محصولات</h3>
             <div className="flex items-center gap-6">
               <select
                 value={categoryFilter}

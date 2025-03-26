@@ -43,7 +43,7 @@ export default function AddProductPage() {
     }
 
     fetchCategories()
-  }, [])
+  }, [showToast])
 
   useEffect(() => {
     // دریافت برندها و کشورها از localStorage
@@ -199,7 +199,7 @@ export default function AddProductPage() {
     <ProtectedRoute>
       <div className="min-h-screen flex p-6 gap-12">
         <AdminPanelNavbar />
-        <div className="w-4/5 p-6 bg-lightGray rounded-2xl shadow-lg space-y-6">
+        <div className="w-full lg:w-4/5 p-6 bg-lightGray rounded-2xl shadow-lg space-y-6">
           <div className="flex items-center gap-4">
             <button
               onClick={() => (window.location.href = '/admin/products')}
@@ -212,9 +212,12 @@ export default function AddProductPage() {
 
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
-          <form onSubmit={handleSubmit} className="flex gap-8">
+          <form
+            onSubmit={handleSubmit}
+            className="flex flex-col lg:flex-row gap-8"
+          >
             <div className="max-w-max">
-              <div className="flex flex-col items-center gap-4">
+              <div className="lg:flex lg:flex-col grid grid-cols-2 sm:grid-cols-4 items-center gap-4">
                 {imageFiles.map((file, index) => (
                   <div key={index} className="relative group">
                     <Image
@@ -272,7 +275,7 @@ export default function AddProductPage() {
             </div>
 
             <div className="w-full space-y-5">
-              <div className="grid grid-cols-2 gap-6 place-items-center">
+              <div className="grid lg:grid-cols-2 gap-6 place-items-center">
                 <input
                   type="text"
                   name="name"
@@ -294,7 +297,7 @@ export default function AddProductPage() {
                   />
                   <span className="ml-2 text-gray-400">تومان</span>
                 </div>
-                <div className="grid grid-cols-2 gap-6 place-items-center">
+                <div className="w-full grid lg:grid-cols-2 gap-6 place-items-center">
                   <input
                     type="text"
                     name="brand"
@@ -360,7 +363,7 @@ export default function AddProductPage() {
                     : ''
                 }`}
               >
-                <div className="grid grid-cols-3 gap-4">
+                <div className="grid lg:grid-cols-3 gap-4">
                   {formData.features.map((feature, index) => (
                     <input
                       key={index}

@@ -4,6 +4,7 @@ import { Package, ShoppingCart, Tag, Truck, Users } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { FiArrowRight } from 'react-icons/fi'
 
 const AdminPanelNavbar = () => {
   const pathname = usePathname()
@@ -34,7 +35,11 @@ const AdminPanelNavbar = () => {
   ]
 
   return (
-    <div className="lg:min-h-full w-full lg:w-1/5 bg-lightGray text-dark rounded-2xl flex flex-col items-center p-4 shadow-lg">
+    <div
+      className={`min-h-full w-full lg:w-1/5 bg-lightGray text-dark rounded-2xl flex flex-col items-center p-4 shadow-lg ${
+        pathname !== '/admin' ? 'hidden lg:flex' : ''
+      }`}
+    >
       {/* لوگو */}
       <Link href={'/'} className="text-lg font-bold mb-8">
         <Image
@@ -56,10 +61,10 @@ const AdminPanelNavbar = () => {
             <Link
               key={link.href}
               href={link.href}
-              className={`flex items-center gap-2 px-6 py-4 rounded-xl ${
+              className={`flex items-center gap-2 px-6 py-4 rounded-xl bg-bg ${
                 isActive
                   ? 'bg-primary text-light'
-                  : 'hover:bg-bg hover:pr-8 transition-all duration-300'
+                  : 'lg:bg-transparent hover:bg-bg hover:pr-8 transition-all duration-300'
               }`}
             >
               {link.icon}
@@ -68,6 +73,21 @@ const AdminPanelNavbar = () => {
           )
         })}
       </div>
+
+      {pathname === '/admin' && (
+        <div className="w-full space-y-24 mt-24">
+          <div className="h-px bg-dark"></div>
+          <button
+            onClick={() => {
+              window.location.href = '/'
+            }}
+            className="w-full flex items-center gap-2 px-6 py-4 rounded-xl bg-bg lg:bg-transparent hover:bg-bg hover:pr-8 transition-all duration-300"
+          >
+            <FiArrowRight size={24} />
+            بازگشت به سایت
+          </button>
+        </div>
+      )}
     </div>
   )
 }

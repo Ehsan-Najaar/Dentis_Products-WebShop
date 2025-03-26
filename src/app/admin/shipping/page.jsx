@@ -3,6 +3,7 @@
 import AdminPanelNavbar from '@/components/AdminPanelNavbar'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { useEffect, useState } from 'react'
+import { FiArrowRight } from 'react-icons/fi'
 import { useAppContext } from '../../../../context/AppContext'
 
 // تابع برای فرمت‌دهی قیمت
@@ -84,9 +85,17 @@ function AdminShipping() {
         {/* نوار کناری */}
         <AdminPanelNavbar />
 
-        <div className="w-4/5 p-4 bg-lightGray rounded-2xl shadow-lg space-y-16">
-          <h3 className="h3">هزینه ارسال</h3>
-          <div className="w-1/3 input flex items-center justify-between">
+        <div className="w-full lg:w-4/5 p-4 bg-lightGray rounded-2xl shadow-lg space-y-16">
+          <div className="flex items-center gap-4">
+            <button
+              onClick={() => (window.location.href = '/admin')}
+              className="lg:hidden p-2 rounded-full bg-bg hover:bg-gray-300"
+            >
+              <FiArrowRight size={24} />
+            </button>
+            <h2 className="h3">ویرایش هزینه ارسال</h2>
+          </div>
+          <div className="md:w-2/3 xl:w-1/3 input flex items-center justify-between">
             <input
               name="shippingCost"
               placeholder="قیمت"
@@ -97,7 +106,7 @@ function AdminShipping() {
             <span className="ml-2 text-gray-400">تومان</span>
           </div>
           <button onClick={updateShippingCost} className="btn-primary">
-            ویرایش هزینه ارسال
+            ویرایش
           </button>
         </div>
       </div>

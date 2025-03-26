@@ -17,13 +17,13 @@ export default function Layout({ children }) {
   return (
     <SessionProvider>
       <AppProvider>
-        <main className="mt-24 lg:mt-0">
+        <main className={`${!isAdminPage ? 'mt-24' : ''} lg:mt-0`}>
           {/* اگر در مسیر "/admin" هستیم، هدر نمایش داده نشود */}
           {!(isAdminPage || isCheckoutPage) && <Header />}
 
-          <MobileHeader />
+          {!(isAdminPage || isCheckoutPage) && <MobileHeader />}
 
-          <BottomNavbar />
+          {!(isAdminPage || isCheckoutPage) && <BottomNavbar />}
 
           {/* نمایش محتوا صفحات دیگر */}
           {children}

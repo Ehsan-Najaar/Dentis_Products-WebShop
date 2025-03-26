@@ -4,7 +4,7 @@ import AdminPanelNavbar from '@/components/AdminPanelNavbar'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import { Edit, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
-import { FiSearch } from 'react-icons/fi'
+import { FiArrowRight, FiSearch } from 'react-icons/fi'
 import { useAppContext } from '../../../../context/AppContext'
 
 export default function Category() {
@@ -91,9 +91,21 @@ export default function Category() {
       <div className="min-h-screen flex p-6 gap-12">
         <AdminPanelNavbar />
 
-        <div className="w-4/5 h-[750px] p-4 flex bg-lightGray rounded-2xl shadow-lg">
-          <section className="w-1/2 p-4 pl-6 space-y-4">
-            <h3 className="h3 text-center">لیست دسته بندی های</h3>
+        <div className="w-full lg:w-4/5 lg:h-[750px] px-2 lg:p-4 lg:flex bg-lightGray rounded-2xl shadow-lg">
+          <div className="flex items-center gap-4 px-4 pt-2 lg:hidden">
+            <button
+              onClick={() => (window.location.href = '/admin')}
+              className="p-2 rounded-full bg-bg hover:bg-gray-300"
+            >
+              <FiArrowRight size={24} />
+            </button>
+            <h2 className="h3">دسته بندی ها</h2>
+          </div>
+
+          <section className="lg:w-1/2 p-4 lg:pl-6 space-y-4">
+            <h3 className="hidden lg:block h3 text-center">
+              لیست دسته بندی های
+            </h3>
             <div className="flex items-center justify-between px-4 py-2 bg-light shadow-sm rounded-full">
               <input
                 type="text"
@@ -145,18 +157,21 @@ export default function Category() {
             {selectedCategories.length > 0 && (
               <button
                 onClick={deleteSelectedCategories}
-                className="flex items-center gap-2 mx-auto py-2 px-4 rounded-full border border-red-800 text-red-800 hover:bg-red-800 hover:text-light transition-all duration-300"
+                className="flex items-center gap-2 mx-auto py-2 px-4 rounded-full border border-red-800 text-red-800 hover:bg-red-800 hover:text-light transition-all duration-300 whitespace-nowrap"
               >
-                حذف دسته بندی های انتخاب‌شده
+                حذف موارد انتخاب شده
                 <Trash2 size={24} />
               </button>
             )}
           </section>
 
-          <section className="w-1/2 pr-6 border-r border-gray-400">
+          <section className="lg:w-1/2 lg:pr-6 lg:border-r border-t lg:border-t-0 border-gray-400">
             <div className="h-1/2 p-4 pb-6 border-b border-gray-400 space-y-4">
               <h3 className="h3">افزودن دسته‌بندی</h3>
-              <form onSubmit={addCategory} className="flex gap-2">
+              <form
+                onSubmit={addCategory}
+                className="flex flex-col lg:flex-row gap-2"
+              >
                 <input
                   type="text"
                   value={newCategory.name}
@@ -175,7 +190,10 @@ export default function Category() {
             {editingCategory && (
               <div className="h-1/2 p-4 pt-6 space-y-4">
                 <h3 className="h3">ویرایش دسته‌بندی</h3>
-                <form onSubmit={editCategory} className="flex gap-2">
+                <form
+                  onSubmit={editCategory}
+                  className="flex flex-col lg:flex-row gap-2"
+                >
                   <input
                     type="text"
                     value={editingCategory.name}

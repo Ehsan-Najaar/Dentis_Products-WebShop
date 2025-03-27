@@ -341,7 +341,7 @@ export default function EditProductPage() {
     <ProtectedRoute>
       <div className="min-h-screen flex p-6 gap-12">
         <AdminPanelNavbar />
-        <div className="lg:w-4/5 p-6 bg-lightGray rounded-2xl shadow-lg space-y-6">
+        <div className="w-full lg:w-4/5 p-6 bg-lightGray rounded-2xl shadow-lg space-y-6">
           <div className="flex items-center gap-4">
             <button
               onClick={() => (window.location.href = '/admin/products')}

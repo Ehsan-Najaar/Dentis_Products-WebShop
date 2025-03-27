@@ -1,5 +1,5 @@
 import ConfirmDialog from '@/components/ConfirmDialog'
-import { AdminProductCardSkeleton } from '@/components/ProductCardSkeleton'
+import { Loader } from '@/components/Loader'
 import { Edit, Trash2 } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -57,25 +57,20 @@ export default function AdminProductsList({ products, onDelete }) {
   )
 
   return (
-    <div className="h-[calc(100%-28%)] max-h-[calc(100%-28%)] p-2 space-y-4 overflow-auto">
+    <div className="lg:h-[calc(100%-28%)] lg:max-h-[calc(100%-28%)] p-2 space-y-4 overflow-auto">
       {loading ? (
-        // نمایش اسکلتون در حالت بارگذاری
-        <div className="grid gap-4">
-          {[...Array(5)].map((_, index) => (
-            <AdminProductCardSkeleton key={index} />
-          ))}
-        </div>
+        <Loader />
       ) : sortedProducts.length > 0 ? (
         <div className="grid gap-4">
           {sortedProducts.map((product) => (
             <div
               key={product._id}
-              className={`flex items-center justify-between p-4 bg-light rounded-lg shadow ${
+              className={`flex flex-col lg:flex-row items-start lg:items-center justify-between p-4 bg-light rounded-lg space-y-4 shadow ${
                 product.quantity === 0 ? 'opacity-50' : ''
               } border-b last:border-0`}
             >
               {/* تصویر محصول */}
-              <section className="w-1/2 flex items-center gap-4">
+              <section className="w-full lg:w-1/2 flex flex-col lg:flex-row items-center gap-4">
                 <figure className="w-20 h-20 flex-shrink-0 flex items-center justify-center rounded-lg overflow-hidden ">
                   {product.images?.length > 0 ? (
                     <Image
@@ -92,16 +87,24 @@ export default function AdminProductsList({ products, onDelete }) {
                   )}
                 </figure>
 
-                <p className="body-text max-w-[70%]">{product.name}</p>
+                <div className="w-full space-y-4 lg:space-y-0">
+                  <small className="w-full lg:hidden small-text">
+                    {categories[product.category] || 'نامشخص'}
+                  </small>
+                  <p className="body-text lg:max-w-[70%]">{product.name}</p>
+                  <p className="lg:hidden body-text w-32 font-bold">
+                    {product.price.toLocaleString()} تومان
+                  </p>
+                </div>
               </section>
 
-              <section className="w-1/2 flex items-center justify-between">
+              <section className="w-full lg:w-1/2 flex lg:items-center justify-between gap-2 lg:gap-0">
                 {/* اطلاعات محصول */}
-                <small className="w-32 small-text">
+                <small className="hidden lg:block w-32 small-text">
                   {categories[product.category] || 'نامشخص'}
                 </small>
                 {/* قیمت و وضعیت موجودی */}
-                <p className="body-text w-32 text-center">
+                <p className="hidden lg:block body-text w-32 text-center">
                   {product.price.toLocaleString()} تومان
                 </p>
                 {/* وضعیت موجودی */}
@@ -130,7 +133,7 @@ export default function AdminProductsList({ products, onDelete }) {
                     : `تنها ${product.quantity} عدد `}
                 </span>
                 {/* دکمه‌ها */}
-                <div className="flex gap-3">
+                <div className="flex justify-end gap-3">
                   <Link
                     href={`/admin/products/${product._id}/edit-product`}
                     className="text-gray-500"

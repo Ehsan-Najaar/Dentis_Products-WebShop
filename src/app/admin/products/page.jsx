@@ -5,7 +5,7 @@ import AdminProductsList from '@/components/AdminProducstList'
 import ProtectedRoute from '@/components/ProtectedRoute'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { FiPlus, FiSearch } from 'react-icons/fi'
+import { FiArrowRight, FiPlus, FiSearch } from 'react-icons/fi'
 import { useAppContext } from '../../../../context/AppContext'
 
 export default function ProductsManagment() {
@@ -89,39 +89,57 @@ export default function ProductsManagment() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen h-[710px] flex p-6 gap-12">
+      <div className="min-h-screen lg:h-[710px] lg:flex p-6 gap-12">
         <AdminPanelNavbar />
-        <div className="lg:w-4/5 p-4 bg-lightGray rounded-2xl shadow-lg">
-          <div className="flex items-center justify-between mb-4">
-            <div className="w-56 flex items-center gap-2">
+
+        <div className="w-full lg:w-4/5 p-4 bg-lightGray rounded-2xl shadow-lg">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4 lg:gap-0">
+            <div className="w-full lg:w-1/3 flex items-center gap-2">
+              <button
+                onClick={() => (window.location.href = '/admin')}
+                className="lg:hidden p-2 rounded-full bg-bg hover:bg-gray-300"
+              >
+                <FiArrowRight size={24} />
+              </button>
               <h2 className="h3">لیست محصولات</h2>
               <small>({filteredAndSortedProducts.length}) محصول</small>
             </div>
-            <div className="w-1/3 flex items-center gap-2 px-4 py-2 bg-light shadow-sm rounded-full">
-              <input
-                type="text"
-                placeholder="جستجو نام محصول..."
-                value={searchTerm}
-                onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-transparent focus:outline-none"
-              />
-              <FiSearch size={24} className="text-gray-500" />
+
+            <div className="w-full lg:w-1/3 flex items-center gap-2">
+              <div className="w-full flex items-center gap-2 px-4 py-2 bg-light shadow-sm rounded-full">
+                <input
+                  type="text"
+                  placeholder="جستجو نام محصول..."
+                  value={searchTerm}
+                  onChange={(e) => setSearchTerm(e.target.value)}
+                  className="w-full bg-transparent focus:outline-none"
+                />
+                <FiSearch size={24} className="text-gray-500" />
+              </div>
+
+              <Link
+                href={'/admin/products/add-product'}
+                className="lg:hidden btn-primary rounded-full shadow-sm"
+              >
+                <FiPlus size={24} />
+              </Link>
             </div>
+
             <Link
               href={'/admin/products/add-product'}
-              className="btn-primary rounded-full shadow-sm"
+              className="hidden lg:flex btn-primary rounded-full shadow-sm"
             >
               افزودن محصول <FiPlus size={24} />
             </Link>
           </div>
 
-          <div className="flex items-center justify-between mt-16 mb-6">
-            <h3 className="hidden lg:block h3">فیلتر و مرتب‌سازی محصولات</h3>
-            <div className="flex items-center gap-6">
+          <div className="flex items-center justify-between lg:mt-16 mt-8 mb-6">
+            <h3 className="hidden xl:block h3">فیلتر و مرتب‌سازی محصولات</h3>
+            <div className="w-full lg:w-max flex flex-col sm:flex-row items-center gap-6">
               <select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
-                className="w-52 bg-light p-4 rounded-lg"
+                className="w-full lg:w-52 bg-light p-4 rounded-lg"
               >
                 <option value="">همه دسته‌بندی‌ها</option>
                 {categories.map((category) => (
@@ -134,7 +152,7 @@ export default function ProductsManagment() {
               <select
                 value={sortOrder}
                 onChange={(e) => setSortOrder(e.target.value)}
-                className="w-52 bg-light p-4 rounded-lg"
+                className="w-full lg:w-52 bg-light p-4 rounded-lg"
               >
                 <option value="default">جدیدترین</option>
                 <option value="asc">ارزان‌ترین</option>
@@ -144,7 +162,7 @@ export default function ProductsManagment() {
               <select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
-                className="w-52 bg-light p-4 rounded-lg"
+                className="w-full lg:w-52 bg-light p-4 rounded-lg"
               >
                 <option value="">همه وضعیت‌ها</option>
                 <option value="available">موجود</option>

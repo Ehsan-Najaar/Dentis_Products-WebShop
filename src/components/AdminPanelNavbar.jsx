@@ -75,7 +75,7 @@ const AdminPanelNavbar = () => {
       </div>
 
       {pathname === '/admin' && (
-        <div className="w-full space-y-24 mt-24">
+        <div className="w-full space-y-12 mt-12">
           <div className="h-px bg-dark"></div>
           <button
             onClick={() => {

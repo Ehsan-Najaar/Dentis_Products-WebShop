@@ -48,18 +48,14 @@ export default function EditProductPage() {
 
     const fetchProduct = async () => {
       try {
-        console.log('Fetching product with ID:', productId) // بررسی مقدار productId
         const res = await fetch(`/api/products/${productId}`)
 
         const text = await res.text() // دریافت به صورت متن
-
-        console.log('Raw response:', text) // بررسی محتوای پاسخ خام
 
         if (!res.ok) throw new Error(`Error fetching product: ${res.status}`)
 
         // حالا تلاش برای تبدیل به JSON
         const data = JSON.parse(text)
-        console.log('Fetched product data:', data)
 
         setFormData({
           name: data.name || '',

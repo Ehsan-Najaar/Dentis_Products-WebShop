@@ -25,7 +25,6 @@ export default function SingleProductPage() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        console.log('🔹 در حال دریافت محصولات...')
         const res = await fetch('/api/products')
 
         if (!res.ok) {

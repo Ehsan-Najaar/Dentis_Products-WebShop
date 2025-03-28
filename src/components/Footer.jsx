@@ -33,7 +33,7 @@ export default function Footer() {
 
   return (
     <footer className="bg-lightGray text-dark py-8 pb-24 lg:pb-0 px-6 xl:px-0 mt-12">
-      <div className="flex flex-wrap items-start justify-between gap-12 max-w-7xl mx-auto">
+      <div className="flex flex-wrap lg:items-center justify-between gap-12 max-w-7xl mx-auto">
         {/* بخش اطلاعات و شبکه‌های اجتماعی */}
         <section className="space-y-6 max-w-sm">
           <div className="rounded-lg overflow-hidden">

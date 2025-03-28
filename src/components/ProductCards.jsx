@@ -1,7 +1,13 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
-import { FiCheckCircle, FiMinus, FiPlus, FiTrash2 } from 'react-icons/fi'
+import {
+  FiCheckCircle,
+  FiMinus,
+  FiPlus,
+  FiShoppingCart,
+  FiTrash2,
+} from 'react-icons/fi'
 import { generateSlug } from '../../utils/slugify'
 
 const ProductCard1 = ({ product }) => {
@@ -63,7 +69,7 @@ const ProductCard1 = ({ product }) => {
             alt={product.name}
             width={192}
             height={192}
-            className="w-full h-full object-contain object-center"
+            className="object-contain object-center"
             priority
           />
         </figure>
@@ -97,23 +103,11 @@ const ProductCard1 = ({ product }) => {
           >
             {/* اگر بارگذاری سبد خرید یا بارگذاری در حال انجام است، آیکون سبد خرید را نمایش می‌دهیم */}
             {cartLoading || loading ? (
-              <Image
-                src="/icons/Bag.png"
-                alt="افزودن به سبد خرید"
-                width={24}
-                height={24}
-                unoptimized
-              />
+              <FiShoppingCart size={24} className="stroke-[1.5]" />
             ) : inCart ? (
               <FiCheckCircle size={24} className="text-primary" /> // آیکون تیک
             ) : (
-              <Image
-                src="/icons/Bag.png"
-                alt="افزودن به سبد خرید"
-                width={24}
-                height={24}
-                unoptimized
-              />
+              <FiShoppingCart size={24} className="stroke-[1.5]" />
             )}
           </button>
 
@@ -134,22 +128,24 @@ const ProductCard2 = ({ product, onUpdateQuantity, onRemove }) => {
         <div className="flex items-center gap-4 sm:gap-6 w-full">
           <Link
             href={`/product/${product.productId._id}`}
-            className="relative w-28 h-28 sm:w-32 sm:h-32 md:w-32 md:h-32"
+            className="relative w-20 h-20 sm:w-32 sm:h-32 md:w-32 md:h-32"
           >
-            <figure className="flex items-center justify-center rounded-2xl overflow-hidden">
+            <figure className="relative w-20 h-20 lg:w-32 lg:h-32 flex items-center justify-center rounded-2xl overflow-hidden">
               <Image
                 src={product?.productId?.images?.[0] || '/default-image.jpg'}
                 alt={product?.productId?.name || 'بدون نام'}
-                layout="fill"
+                fill
+                priority
+                sizes="(max-width: 768px) 90px, 190px"
                 className="object-center object-contain"
               />
             </figure>
           </Link>
 
-          <div className="flex flex-col justify-between w-full">
+          <div className="flex flex-col lg:gap-4 justify-between w-full">
             <Link
               href={`/category/${product.productId.category?._id}`}
-              className="block text-sm sm:text-base font-semibold"
+              className="block lg:w-64 text-sm sm:text-base font-semibold"
             >
               {product.productId.name}
             </Link>
@@ -204,7 +200,7 @@ const ProductCard2 = ({ product, onUpdateQuantity, onRemove }) => {
       {/* دکمه حذف محصول */}
       <button
         onClick={() => onRemove(product.productId._id)}
-        className="md:w-[10%] w-[15%] grid place-items-center text-neutral bg-lightGray hover:bg-red-600 hover:text-light transition-all duration-300"
+        className="md:w-[5%] w-[15%] grid place-items-center text-neutral bg-lightGray hover:bg-red-600 hover:text-light transition-all duration-300"
       >
         <FiTrash2 size={24} />
       </button>

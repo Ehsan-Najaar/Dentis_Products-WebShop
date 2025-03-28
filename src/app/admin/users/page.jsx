@@ -13,13 +13,6 @@ export default function Users() {
   const [searchTerm, setSearchTerm] = useState('')
 
   useEffect(() => {
-    console.log('Users fetched:', users) // لیست کامل کاربران
-    users.forEach((user) => {
-      console.log(`User: ${user.name}, Created At:`, user.createdAt) // تاریخ ایجاد
-    })
-  }, [users])
-
-  useEffect(() => {
     const fetchUsers = async () => {
       try {
         const response = await fetch('/api/users')
@@ -27,7 +20,6 @@ export default function Users() {
           throw new Error('خطا در دریافت لیست کاربران')
         }
         const data = await response.json()
-        console.log('Users fetched:', data) // بررسی داده‌ها
         setUsers(data)
       } catch (err) {
         setError(err.message)

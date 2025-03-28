@@ -121,7 +121,7 @@ export default function MostViewedProducts() {
               ))
           : products.map((product) => (
               <SwiperSlide
-                key={product.id}
+                key={product._id}
                 aria-label={`محصول: ${product.name}`}
               >
                 <ProductCard1 product={product} />

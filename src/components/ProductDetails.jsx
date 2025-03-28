@@ -104,6 +104,7 @@ export default function ProductDetails({
               width={800}
               height={800}
               className="h-full object-contain"
+              priority
             />
           </div>
 

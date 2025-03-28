@@ -51,11 +51,6 @@ export default function ProductsManagment() {
     fetchCategories()
   }, [showToast])
 
-  // لاگ گرفتن از محصولات بعد از مقدارگیری
-  useEffect(() => {
-    console.log(products.map((p) => ({ name: p.name, createdAt: p.createdAt })))
-  }, [products]) // اجرای لاگ هر بار که `products` تغییر کند
-
   const handleDeleteProduct = async (id) => {
     if (!window.confirm('آیا از حذف این محصول مطمئن هستید؟')) return
     try {

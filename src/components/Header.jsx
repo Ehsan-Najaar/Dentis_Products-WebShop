@@ -3,6 +3,7 @@
 import AuthModal from '@/components/AuthModal'
 import SearchModal from '@/components/SearchModal'
 import UserDropdownMenu from '@/components/UserDropdownMenu'
+import { SearchIcon, ShoppingCart } from 'lucide-react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -73,10 +74,10 @@ export default function Header() {
         <Image
           src="/images/logo.webp"
           alt="لوگوی سایت"
-          width={150}
-          height={150}
+          width={150} // مقدار دقیق
+          height={150} // مقدار دقیق
+          className="w-16 h-16 rounded-lg object-contain"
           priority
-          className="w-16 h-16 rounded-lg"
         />
       </Link>
 
@@ -127,7 +128,7 @@ export default function Header() {
           }`}
           onClick={() => setSearchModalOpen(true)}
         >
-          <Image src="/icons/Search.png" alt="جستجو" width={24} height={24} />
+          <SearchIcon size={24} className="stroke-[1.2]" />
         </figure>
 
         <SearchModal
@@ -149,12 +150,7 @@ export default function Header() {
                 pathName === '/cart' ? 'bg-accent' : 'bg-light'
               }`}
             >
-              <Image
-                src="/icons/Bag.png"
-                alt="سبد خرید"
-                width={24}
-                height={24}
-              />
+              <ShoppingCart size={24} className="stroke-[1.5]" />
               {/* نمایش تعداد محصولات منحصر به فرد */}
               {uniqueProductCount > 0 && (
                 <span className="absolute -bottom-1 -right-1 text-xs bg-primary text-white rounded-full w-6 h-6 flex items-center justify-center">

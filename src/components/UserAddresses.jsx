@@ -24,6 +24,8 @@ const UserAddresses = ({ userId }) => {
   })
 
   useEffect(() => {
+    if (!userId) return // جلوگیری از ارسال درخواست نامعتبر
+
     const fetchAddresses = async () => {
       try {
         setLoading(true)
@@ -36,6 +38,7 @@ const UserAddresses = ({ userId }) => {
         setLoading(false)
       }
     }
+
     fetchAddresses()
   }, [userId])
 

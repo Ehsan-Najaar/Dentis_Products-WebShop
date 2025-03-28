@@ -1,8 +1,7 @@
 'use client'
 
-import { ListChecks } from 'lucide-react'
+import { ListChecks, UserIcon } from 'lucide-react'
 import { useSession } from 'next-auth/react'
-import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { FiChevronLeft, FiLogOut, FiMap, FiSettings } from 'react-icons/fi'
@@ -31,14 +30,8 @@ export default function UserDropdownMenu({ pathName }) {
             pathName.startsWith('/dashboard') ? 'bg-accent' : 'bg-light'
           }`}
         >
-          <Image
-            src="/icons/User.png"
-            alt="حساب کاربری"
-            width={24}
-            height={24}
-          />
+          <UserIcon size={24} className="stroke-[1.5]" />
         </div>
-
         <div className="absolute -left-16 mt-2 w-44 rounded-lg bg-white ring-1 ring-dark ring-opacity-0 overflow-hidden max-h-0 group-hover:max-h-[500px] transition-all duration-300 z-10">
           <div className="border-b">
             <Link href={dashboardLink}>

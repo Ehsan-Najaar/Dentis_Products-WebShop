@@ -1,74 +1,97 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
+import connectDB from '../../../../lib/db'
 import User from '../../../../models/User'
 
-// دریافت آدرس‌ها
+await connectDB() // اتصال به دیتابیس
+
+// دریافت آدرس‌های کاربر
 export async function GET(req) {
-  const { searchParams } = new URL(req.url)
-  const userId = searchParams.get('userId')
-
-  if (!userId) {
-    return NextResponse.json({ message: 'userId is required' }, { status: 400 })
-  }
-
   try {
+    const { searchParams } = new URL(req.url)
+    const userId = searchParams.get('userId')?.trim()
+
+    const session = await getServerSession(authOptions)
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    }
+
+    if (!userId) {
+      return NextResponse.json(
+        { message: 'userId is required' },
+        { status: 400 }
+      )
+    }
+
     const user = await User.findById(userId)
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
 
-    return NextResponse.json(user.addresses)
+    return NextResponse.json(user.addresses, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ message: error.message }, { status: 500 })
+    console.error('GET Error:', error)
+    return NextResponse.json({ message: 'Server error' }, { status: 500 })
   }
 }
 
 // ایجاد آدرس جدید
 export async function POST(req) {
-  const { userId, address } = await req.json()
-
-  if (!userId || !address) {
-    return NextResponse.json(
-      { message: 'userId and address are required' },
-      { status: 400 }
-    )
-  }
-
   try {
+    const { userId, address } = await req.json()
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    }
+
+    if (!userId || !address) {
+      return NextResponse.json(
+        { message: 'userId and address are required' },
+        { status: 400 }
+      )
+    }
+
     const user = await User.findById(userId)
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
 
-    // اضافه کردن آدرس به آرایه addresses
     user.addresses.push(address)
-    await user.save() // ذخیره تغییرات در پایگاه داده
+    await user.save()
 
-    return NextResponse.json(user.addresses) // ارسال آدرس‌های به‌روز‌شده
+    return NextResponse.json(user.addresses, { status: 201 })
   } catch (error) {
-    return NextResponse.json({ message: error.message }, { status: 500 })
+    console.error('POST Error:', error)
+    return NextResponse.json({ message: 'Server error' }, { status: 500 })
   }
 }
 
 // ویرایش آدرس
 export async function PUT(req) {
-  const { userId, addressId, updatedAddress } = await req.json()
-
-  if (!userId || !addressId || !updatedAddress) {
-    return NextResponse.json(
-      { message: 'userId, addressId, and updatedAddress are required' },
-      { status: 400 }
-    )
-  }
-
   try {
+    const { userId, addressId, updatedAddress } = await req.json()
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    }
+
+    if (!userId || !addressId || !updatedAddress) {
+      return NextResponse.json(
+        { message: 'userId, addressId, and updatedAddress are required' },
+        { status: 400 }
+      )
+    }
+
     const user = await User.findById(userId)
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
 
-    // استفاده از _id به جای id
     const addressIndex = user.addresses.findIndex(
-      (addr) => addr._id.toString() === addressId // تغییر به _id
+      (addr) => addr._id.toString() === addressId
     )
     if (addressIndex === -1) {
       return NextResponse.json(
@@ -77,43 +100,49 @@ export async function PUT(req) {
       )
     }
 
-    user.addresses[addressIndex] = updatedAddress
+    user.addresses[addressIndex] = {
+      ...user.addresses[addressIndex].toObject(),
+      ...updatedAddress,
+    }
     await user.save()
 
-    return NextResponse.json(user.addresses)
+    return NextResponse.json(user.addresses, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ message: error.message }, { status: 500 })
+    console.error('PUT Error:', error)
+    return NextResponse.json({ message: 'Server error' }, { status: 500 })
   }
 }
 
 // حذف آدرس
 export async function DELETE(req) {
-  const { searchParams } = new URL(req.url)
-  const userId = searchParams.get('userId')
-  const addressId = searchParams.get('addressId')
-
-  if (!userId || !addressId) {
-    return NextResponse.json(
-      { message: 'userId and addressId are required' },
-      { status: 400 }
-    )
-  }
-
   try {
+    const { userId, addressId } = await req.json()
+    const session = await getServerSession(authOptions)
+
+    if (!session) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 403 })
+    }
+
+    if (!userId || !addressId) {
+      return NextResponse.json(
+        { message: 'userId and addressId are required' },
+        { status: 400 }
+      )
+    }
+
     const user = await User.findById(userId)
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
 
-    // فیلتر کردن آدرس‌ها و حذف آدرس موردنظر
     user.addresses = user.addresses.filter(
       (addr) => addr._id.toString() !== addressId
     )
-
     await user.save()
 
-    return NextResponse.json(user.addresses)
+    return NextResponse.json(user.addresses, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ message: error.message }, { status: 500 })
+    console.error('DELETE Error:', error)
+    return NextResponse.json({ message: 'Server error' }, { status: 500 })
   }
 }

@@ -65,7 +65,9 @@ export default function Header() {
 
   // محاسبه تعداد محصولات منحصر به فرد در سبد خرید
   const uniqueProductCount = new Set(
-    (Array.isArray(cart) ? cart : []).map((item) => item.productId._id)
+    (Array.isArray(cart) ? cart : [])
+      .filter((item) => item.productId && item.productId._id) // حذف مواردی که مقدار productId ندارند
+      .map((item) => item.productId._id)
   ).size
 
   return (

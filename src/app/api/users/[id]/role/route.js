@@ -1,9 +1,10 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
 import User from '../../../../../../models/User'
 
 export async function PUT(request, { params }) {
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions) // اصلاح شده
 
   // بررسی اینکه کاربر لاگین کرده باشد
   if (!session || !session.user) {

@@ -45,19 +45,18 @@ export const authOptions = {
   },
   callbacks: {
     async session({ session, token }) {
-      if (token) {
-        session.user = token.user // مقدار جدید نقش را در session ست کن
+      if (token?.user) {
+        session.user = token.user // مقدار `user` از `token` دریافت میشه
       }
       return session
     },
     async jwt({ token, user }) {
       if (user) {
-        token.user = user // هنگام ورود، نقش کاربر را در توکن ذخیره کن
-      } else {
-        // دریافت کاربر از دیتابیس هنگام درخواست‌های بعدی
-        const dbUser = await User.findById(token.user.id)
-        if (dbUser) {
-          token.user.role = dbUser.role
+        token.user = {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          role: user.role, // مقدار نقش را ست کن
         }
       }
       return token
@@ -66,6 +65,6 @@ export const authOptions = {
 
   secret: process.env.NEXTAUTH_SECRET,
 }
-
+console.log('AuthOptions:', authOptions)
 const handler = NextAuth(authOptions)
 export { handler as GET, handler as POST }

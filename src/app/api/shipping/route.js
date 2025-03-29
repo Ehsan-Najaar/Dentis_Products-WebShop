@@ -1,18 +1,10 @@
 'use server'
 
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
 import connectDB from '../../../../lib/db'
 import Shipping from '../../../../models/Shipping'
-
-// بررسی احراز هویت
-async function checkSession() {
-  const session = await getServerSession()
-  if (!session || !session.user || session.user.role !== 'admin') {
-    throw new Error('Unauthorized')
-  }
-  return session
-}
 
 // دریافت هزینه ارسال
 export async function GET(req) {
@@ -44,13 +36,16 @@ export async function GET(req) {
 export async function PUT(request) {
   try {
     // بررسی احراز هویت
-    await checkSession()
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json({ message: 'Forbidden' }, { status: 403 })
+    }
 
     await connectDB()
 
     const { shippingCost } = await request.json()
 
-    // بررسی مقدار معتبر بودن عدد
+    // بررسی معتبر بودن مقدار
     if (
       typeof shippingCost !== 'number' ||
       isNaN(shippingCost) ||
@@ -62,22 +57,19 @@ export async function PUT(request) {
       )
     }
 
-    let shippingInfo = await Shipping.findOne()
+    // بررسی اینکه آیا مقدار قبلاً وجود داشته یا نه
+    const shippingInfo = await Shipping.findOneAndUpdate(
+      {},
+      { shippingCost },
+      { new: true, upsert: true }
+    )
 
-    if (!shippingInfo) {
-      shippingInfo = new Shipping({ shippingCost })
-    } else {
-      shippingInfo.shippingCost = shippingCost
-    }
-
-    await shippingInfo.save()
-
-    return NextResponse.json({ message: 'Shipping cost updated successfully' })
+    return NextResponse.json({
+      message: 'Shipping cost updated successfully',
+      shippingCost: shippingInfo.shippingCost,
+    })
   } catch (error) {
     console.error('Error updating shipping cost:', error)
-    if (error.message === 'Unauthorized') {
-      return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
-    }
     return NextResponse.json(
       { message: 'Error updating shipping cost', error: error.message },
       { status: 500 }

@@ -1,5 +1,7 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
-import slugify from 'slugify' // حتماً نصبش کن
+import slugify from 'slugify'
 import connectDB from '../../../../lib/db'
 import Product from '../../../../models/Product'
 
@@ -10,7 +12,7 @@ export async function GET(req) {
 
     const { searchParams } = new URL(req.url)
 
-    const search = searchParams.get('search') // 🔹 مقدار جستجو
+    const search = searchParams.get('search')
     const minPrice = searchParams.get('minPrice')
     const maxPrice = searchParams.get('maxPrice')
     const brands = searchParams.get('brands')?.split(',')
@@ -19,9 +21,8 @@ export async function GET(req) {
 
     const filter = {}
 
-    // 🔹 افزودن جستجو در نام محصول
     if (search) {
-      filter.name = { $regex: search, $options: 'i' } // جستجو بدون حساسیت به حروف بزرگ و کوچک
+      filter.name = { $regex: search, $options: 'i' }
     }
 
     if (minPrice || maxPrice) {
@@ -58,10 +59,32 @@ export async function POST(req) {
   try {
     await connectDB()
 
-    const body = await req.json()
+    const session = await getServerSession(authOptions)
+    if (!session || session.user.role !== 'admin') {
+      return NextResponse.json({ message: 'دسترسی غیرمجاز' }, { status: 403 })
+    }
+
+    // دریافت بدنه درخواست به عنوان متن خام
+    const bodyText = await req.text()
+    if (!bodyText) {
+      return NextResponse.json(
+        { message: 'بدنه درخواست خالی است' },
+        { status: 400 }
+      )
+    }
+
+    let body
+    try {
+      body = JSON.parse(bodyText)
+    } catch (error) {
+      return NextResponse.json(
+        { message: 'فرمت JSON نامعتبر است' },
+        { status: 400 }
+      )
+    }
+
     console.log('📥 دریافت داده در API:', body)
 
-    // بررسی مقدار `name`
     if (!body.name) {
       return NextResponse.json(
         { message: 'نام محصول الزامی است' },
@@ -69,15 +92,13 @@ export async function POST(req) {
       )
     }
 
-    // ایجاد مقدار `slug` بهینه‌شده
     let slug = slugify(body.name, {
       lower: true,
       strict: true,
-      replacement: '-', // فاصله‌ها به خط تیره تبدیل می‌شوند
-      locale: 'fa', // تنظیم زبان به فارسی برای تبدیل بهتر کاراکترها
+      replacement: '-',
+      locale: 'fa',
     })
 
-    // بررسی یکتا بودن `slug`
     let existingProduct = await Product.findOne({ slug })
     let count = 1
 
@@ -89,8 +110,8 @@ export async function POST(req) {
 
     const newProduct = new Product({
       ...body,
-      slug, // مقدار `slug` را اضافه کن
-      view: 0, // مقدار `views` رو اصلاح کردم
+      slug,
+      view: 0,
     })
 
     await newProduct.save()

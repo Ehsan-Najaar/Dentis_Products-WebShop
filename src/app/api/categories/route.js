@@ -1,3 +1,5 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { getServerSession } from 'next-auth'
 import connectDB from '../../../../lib/db'
 import Category from '../../../../models/Category'
 
@@ -17,29 +19,51 @@ export async function GET() {
 
 export async function POST(req) {
   await connectDB()
+  const session = await getServerSession(authOptions)
 
-  const { name } = await req.json()
-  if (!name) {
-    return new Response(
-      JSON.stringify({ message: 'نام دسته‌بندی اجباری است' }),
-      { status: 400 }
-    )
+  if (!session || session.user.role !== 'admin') {
+    return new Response(JSON.stringify({ message: 'Forbidden' }), {
+      status: 403,
+    })
   }
 
+  // تست مقدار req.body قبل از پارس کردن JSON
+  console.log('دریافت req.body در POST:', req.body)
+
   try {
-    const newCategory = new Category({ name })
+    const rawBody = await req.text() // دریافت متن خام درخواست
+    console.log('داده خام درخواست:', rawBody)
+
+    const data = JSON.parse(rawBody) // تبدیل به JSON
+    console.log('داده‌های پردازش‌شده:', data)
+
+    if (!data.name) {
+      return new Response(
+        JSON.stringify({ message: 'نام دسته‌بندی اجباری است' }),
+        { status: 400 }
+      )
+    }
+
+    const newCategory = new Category({ name: data.name })
     await newCategory.save()
     return new Response(JSON.stringify(newCategory), { status: 201 })
   } catch (error) {
-    return new Response(
-      JSON.stringify({ message: 'خطا در افزودن دسته‌بندی' }),
-      { status: 500 }
-    )
+    console.error('خطا در پردازش JSON:', error)
+    return new Response(JSON.stringify({ message: 'خطا در پردازش داده‌ها' }), {
+      status: 400,
+    })
   }
 }
 
 export async function DELETE(req) {
   await connectDB()
+  const session = await getServerSession(authOptions)
+
+  if (!session || session.user.role !== 'admin') {
+    return new Response(JSON.stringify({ message: 'Forbidden' }), {
+      status: 403,
+    })
+  }
 
   const { id } = await req.json()
   if (!id) {
@@ -66,6 +90,13 @@ export async function DELETE(req) {
 
 export async function PUT(req) {
   await connectDB()
+  const session = await getServerSession(authOptions)
+
+  if (!session || session.user.role !== 'admin') {
+    return new Response(JSON.stringify({ message: 'Forbidden' }), {
+      status: 403,
+    })
+  }
 
   const { id, name } = await req.json()
 

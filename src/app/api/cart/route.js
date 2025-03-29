@@ -1,3 +1,4 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
 import connectDB from '../../../../lib/db'
@@ -5,7 +6,7 @@ import User from '../../../../models/User'
 
 export async function GET() {
   await connectDB()
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
 
   if (!session) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
@@ -30,7 +31,7 @@ export async function GET() {
 
 export async function POST(req) {
   await connectDB()
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
 
   if (!session) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
@@ -78,7 +79,7 @@ export async function POST(req) {
 
 export async function DELETE(req) {
   await connectDB()
-  const session = await getServerSession()
+  const session = await getServerSession(authOptions)
 
   if (!session) {
     return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })

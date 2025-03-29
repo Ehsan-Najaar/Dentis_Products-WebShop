@@ -1,15 +1,20 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
-import slugify from 'slugify' // حتماً نصب شود
+import slugify from 'slugify'
 import connectDB from '../../../../../lib/db'
 import Product from '../../../../../models/Product'
 
 // 📌 بررسی احراز هویت
-async function checkSession() {
-  const session = await getServerSession()
-  if (!session) {
-    throw new Error('Unauthorized')
+async function checkAdminSession() {
+  const session = await getServerSession(authOptions)
+
+  console.log('📌 session:', session) // لاگ بگیر ببین مقدار role چی برمی‌گرده
+
+  if (!session || session.user.role !== 'admin') {
+    throw new Error('Forbidden')
   }
+
   return session
 }
 
@@ -19,7 +24,7 @@ export async function GET(req, { params }) {
     await connectDB()
 
     // بررسی احراز هویت
-    await checkSession()
+    await checkAdminSession()
 
     const { id } = params
 
@@ -52,8 +57,8 @@ export async function DELETE(req, { params }) {
   try {
     await connectDB()
 
-    // بررسی احراز هویت
-    await checkSession()
+    // بررسی دسترسی فقط برای ادمین‌ها
+    await checkAdminSession()
 
     const { id } = params
 
@@ -67,7 +72,10 @@ export async function DELETE(req, { params }) {
       { status: 200 }
     )
   } catch (error) {
-    console.error('خطا در حذف محصول:', error)
+    console.error('❌ خطا در حذف محصول:', error)
+    if (error.message === 'Forbidden') {
+      return NextResponse.json({ message: 'دسترسی غیرمجاز' }, { status: 403 })
+    }
     return NextResponse.json(
       { message: 'خطا در حذف محصول', error: error.message },
       { status: 500 }
@@ -80,8 +88,8 @@ export async function PUT(request, { params }) {
   try {
     await connectDB()
 
-    // بررسی احراز هویت
-    await checkSession()
+    // بررسی دسترسی فقط برای ادمین‌ها
+    await checkAdminSession()
 
     const { id } = params
     const updateData = await request.json()
@@ -124,7 +132,10 @@ export async function PUT(request, { params }) {
 
     return NextResponse.json(updatedProduct, { status: 200 })
   } catch (error) {
-    console.error('خطا در ویرایش محصول:', error)
+    console.error('❌ خطا در ویرایش محصول:', error)
+    if (error.message === 'Forbidden') {
+      return NextResponse.json({ message: 'دسترسی غیرمجاز' }, { status: 403 })
+    }
     return NextResponse.json(
       { message: 'خطا در ویرایش محصول', error: error.message },
       { status: 500 }

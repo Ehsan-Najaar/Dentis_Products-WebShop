@@ -41,7 +41,7 @@ function AdminShipping() {
   const updateShippingCost = async () => {
     const numericValue = Number(removeCommas(formData.shippingCost)) // تبدیل به عدد
     if (isNaN(numericValue) || numericValue < 0) {
-      showToast('لطفا مقدار معتبر وارد کنید', '')
+      showToast('لطفا مقدار معتبر وارد کنید', 'error')
       return
     }
 
@@ -52,7 +52,7 @@ function AdminShipping() {
     })
 
     if (res.ok) {
-      showToast('هزینه ارسال با موفقیت ویرایش شد', '')
+      showToast('هزینه ارسال با موفقیت ویرایش شد', 'success')
       fetchShippingCost() // مقدار جدید را دریافت کن
     }
   }

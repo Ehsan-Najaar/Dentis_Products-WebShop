@@ -1,4 +1,3 @@
-// /app/api/products/route.js
 import { NextResponse } from 'next/server'
 import connectDB from '../../../../lib/db'
 import Product from '../../../../models/Product'
@@ -7,41 +6,63 @@ export async function GET(request) {
   await connectDB()
 
   const { searchParams } = new URL(request.url)
-  const category = searchParams.get('category')?.split(',')
-  const brands = searchParams.get('brands')?.split(',')
-  const minPrice = searchParams.get('minPrice')
-  const maxPrice = searchParams.get('maxPrice')
+
+  // دریافت و پردازش فیلترها
+  const category =
+    searchParams
+      .get('category')
+      ?.split(',')
+      .map((c) => c.trim()) || []
+  const brand = searchParams.get('brand')?.trim() || ''
+  const brands =
+    searchParams
+      .get('brands')
+      ?.split(',')
+      .map((b) => b.trim()) || []
+  const origins =
+    searchParams
+      .get('origins')
+      ?.split(',')
+      .map((o) => o.trim()) || []
+  const minPrice = Number(searchParams.get('minPrice')) || 0
+  const maxPrice = Number(searchParams.get('maxPrice')) || Infinity
   const sort = searchParams.get('sort')
 
+  // ساخت کوئری
   let query = {}
 
-  // فیلتر بر اساس دسته‌بندی
-  if (category && category.length) {
+  if (category.length) {
     query.category = { $in: category }
   }
 
-  // فیلتر بر اساس برندها
-  if (brands && brands.length) {
-    query.brand = { $in: brands }
+  if (brand) {
+    query.brand = new RegExp(`^${brand}$`, 'i') // بررسی دقیق برند با حساسیت غیرفعال روی حروف بزرگ و کوچک
   }
 
-  // فیلتر بر اساس قیمت
-  if (minPrice && maxPrice) {
-    query.price = { $gte: Number(minPrice), $lte: Number(maxPrice) }
+  if (brands.length) {
+    query.brand = { $in: brands.map((b) => new RegExp(`^${b}$`, 'i')) }
   }
+
+  if (origins.length) {
+    query.origin = { $in: origins }
+  }
+
+  query.price = { $gte: minPrice, $lte: maxPrice }
+
+  console.log('✅ کوئری نهایی برای MongoDB:', query)
 
   try {
-    let products = await Product.find(query)
+    let sortQuery = {}
+    if (sort === 'price-asc') sortQuery.price = 1
+    if (sort === 'price-desc') sortQuery.price = -1
 
-    // مرتب‌سازی
-    if (sort === 'price-asc') {
-      products = products.sort((a, b) => a.price - b.price)
-    } else if (sort === 'price-desc') {
-      products = products.sort((a, b) => b.price - a.price)
-    }
+    let products = await Product.find(query).sort(sortQuery)
+
+    console.log('📡 تعداد محصولات پیدا شده:', products.length)
 
     return NextResponse.json(products)
   } catch (error) {
+    console.error('❌ خطا در دریافت محصولات:', error.message)
     return NextResponse.json(
       { message: 'خطایی رخ داد', error: error.message },
       { status: 500 }

@@ -7,17 +7,26 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { FaArrowLeft, FaChevronDown, FaChevronUp } from 'react-icons/fa'
 
-export default function FilterSidebar({ onApplyFilters, setFiltersOpen }) {
-  const [priceRange, setPriceRange] = useState([0, 7500000])
-  const [selectedBrand, setSelectedBrand] = useState([])
-  const [selectedOrigin, setSelectedOrigin] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState('')
+export default function FilterSidebar({
+  categories,
+  brands,
+  origins,
+  priceMin,
+  priceMax,
+  filters = {},
+  setFilters,
+  onApplyFilters,
+  setFiltersOpen,
+}) {
   const pathname = usePathname()
+  const [tempFilters, setTempFilters] = useState({
+    priceRange: filters.priceRange || [priceMin, priceMax],
+    selectedBrand: filters.selectedBrand || [],
+    selectedOrigin: filters.selectedOrigin || [],
+    selectedCategory: filters.selectedCategory || '',
+  })
 
-  const [brands, setBrands] = useState([])
-  const [origins, setOrigins] = useState([])
-  const [categories, setCategories] = useState([])
-
+  const [categoryDetails, setCategoryDetails] = useState([])
   const [isOpen, setIsOpen] = useState({
     categories: false,
     brands: false,
@@ -25,142 +34,60 @@ export default function FilterSidebar({ onApplyFilters, setFiltersOpen }) {
     price: false,
   })
 
-  // دریافت برندها و کشورهای تولیدکننده
   useEffect(() => {
-    const fetchFilters = async () => {
-      try {
-        const res = await fetch('/api/filters')
-        const data = await res.json()
-        if (res.ok) {
-          setBrands(data.brands)
-          setOrigins(data.origins)
-        }
-      } catch (error) {
-        console.error('خطا در دریافت فیلترها:', error)
-      }
-    }
-    fetchFilters()
+    fetch('/api/categories')
+      .then((res) => res.json())
+      .then((data) => setCategoryDetails(data))
+      .catch((error) => console.error('خطا در دریافت دسته‌بندی‌ها', error))
   }, [])
 
-  // دریافت دسته‌بندی‌ها
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await fetch('/api/categories')
-        const data = await res.json()
-        if (res.ok) {
-          setCategories(data)
-        }
-      } catch (error) {
-        console.error('خطا در دریافت دسته‌بندی‌ها:', error)
-      }
-    }
-    fetchCategories()
-  }, [])
+    const categorySlug = pathname.split('/').pop()
+    const matchedCategory = categories.find((cat) => cat.slug === categorySlug)
 
-  // دریافت دسته‌بندی فعال از مسیر URL
-  useEffect(() => {
-    const category = pathname.split('/').pop()
-    setSelectedCategory(category)
-  }, [pathname])
-
-  const handleSliderChange = (event, newValue) => {
-    setPriceRange(newValue)
-  }
+    setTempFilters((prev) => ({
+      ...prev,
+      selectedCategory: matchedCategory?._id || '',
+    }))
+  }, [pathname, categories])
 
   const handleCheckboxChange = (e, type) => {
     const value = e.target.value
-    let updatedSelection = []
-
-    if (type === 'brand') {
-      updatedSelection = selectedBrand.includes(value)
-        ? selectedBrand.filter((item) => item !== value)
-        : [...selectedBrand, value]
-      setSelectedBrand(updatedSelection)
-    } else if (type === 'origin') {
-      updatedSelection = selectedOrigin.includes(value)
-        ? selectedOrigin.filter((item) => item !== value)
-        : [...selectedOrigin, value]
-      setSelectedOrigin(updatedSelection)
-    }
+    setTempFilters((prev) => ({
+      ...prev,
+      [type]: prev[type].includes(value)
+        ? prev[type].filter((item) => item !== value)
+        : [...prev[type], value],
+    }))
   }
 
-  const applyFilters = () => {
-    const filters = {
-      priceRange,
-      selectedBrand,
-      selectedOrigin,
-      selectedCategory,
-    }
-
-    console.log('اعمال فیلترها:', filters)
-
-    onApplyFilters(filters)
-
-    setFiltersOpen && setFiltersOpen(false)
+  const handleSliderChange = (_, newValue) => {
+    setTempFilters((prev) => ({ ...prev, priceRange: newValue }))
   }
 
   const clearFilters = () => {
-    setPriceRange([0, 7500000])
-    setSelectedBrand([])
-    setSelectedOrigin([])
-    setSelectedCategory('')
-    onApplyFilters({
-      priceRange: [0, 7500000],
+    setFilters({
+      priceRange: [priceMin, priceMax],
+      selectedBrand: [],
+      selectedOrigin: [],
+      selectedCategory: '',
+    })
+    setTempFilters({
+      priceRange: [priceMin, priceMax],
       selectedBrand: [],
       selectedOrigin: [],
       selectedCategory: '',
     })
   }
 
+  const applyFilters = () => {
+    setFilters(tempFilters)
+    onApplyFilters && onApplyFilters(tempFilters)
+  }
+
   const toggleSection = (section) => {
     setIsOpen((prev) => ({ ...prev, [section]: !prev[section] }))
   }
-
-  const FilterCheckbox = ({
-    label,
-    values,
-    selectedValues,
-    handleChange,
-    type,
-    sectionKey,
-  }) => (
-    <div className="mb-6">
-      <div
-        className={`flex items-center justify-between cursor-pointer p-2 rounded-lg bg-bg ${
-          isOpen[sectionKey] ? 'rounded-b-none' : ''
-        }`}
-        onClick={() => toggleSection(sectionKey)}
-      >
-        <h3 className="body-text">{label}</h3>
-        {isOpen[sectionKey] ? <FaChevronUp /> : <FaChevronDown />}
-      </div>
-      {isOpen[sectionKey] && (
-        <ul className="space-y-2 max-h-48 overflow-y-auto bg-bg p-4">
-          {values.map((value, index) => (
-            <li key={index}>
-              <div className="flex items-center gap-2">
-                <input
-                  id={`${type}-checkbox-${value}`}
-                  type="checkbox"
-                  value={value}
-                  checked={selectedValues.includes(value)}
-                  onChange={(e) => handleChange(e, type)}
-                  className="cursor-pointer w-4 h-4 accent-primary"
-                />
-                <label
-                  htmlFor={`${type}-checkbox-${value}`}
-                  className="text-sm cursor-pointer"
-                >
-                  {value}
-                </label>
-              </div>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  )
 
   return (
     <div className="bg-lightGray p-6 rounded-2xl text-dark shadow-lg w-full max-w-xs">
@@ -168,7 +95,6 @@ export default function FilterSidebar({ onApplyFilters, setFiltersOpen }) {
         فیلترها
       </h2>
 
-      {/* دکمه‌های حذف و اعمال فیلتر */}
       <div className="flex justify-end gap-2 mb-6">
         <button
           onClick={clearFilters}
@@ -187,9 +113,7 @@ export default function FilterSidebar({ onApplyFilters, setFiltersOpen }) {
       {/* دسته‌بندی‌ها */}
       <div className="mb-6">
         <div
-          className={`flex items-center justify-between cursor-pointer p-2 rounded-lg bg-bg ${
-            isOpen.categories ? 'rounded-b-none' : ''
-          }`}
+          className="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-bg"
           onClick={() => toggleSection('categories')}
         >
           <h3 className="body-text">دسته‌بندی‌ها</h3>
@@ -197,80 +121,95 @@ export default function FilterSidebar({ onApplyFilters, setFiltersOpen }) {
         </div>
         {isOpen.categories && (
           <ul className="space-y-2 max-h-48 overflow-y-auto bg-bg p-4">
-            {categories.map((category, index) => {
-              const isActive =
-                category.slug === selectedCategory ||
-                (category.slug === 'all' && pathname === '/store')
-
-              return (
-                <li key={index}>
-                  <Link
-                    href={`/store/${category.slug}`}
-                    className={`${
-                      isActive ? 'bg-gray-300' : ''
-                    } flex items-center justify-between text-sm p-2 rounded-xl text-gray-700 hover:bg-gray-300 transition-all`}
-                  >
-                    {category.name}
-                    <FaArrowLeft
-                      size={20}
-                      className="border border-gray-400 p-1 rounded-full"
-                    />
-                  </Link>
-                </li>
-              )
-            })}
+            {categoryDetails.map((category) => (
+              <li key={category._id}>
+                <Link
+                  href={`/store/${category._id}`}
+                  className={`${
+                    tempFilters.selectedCategory === category._id
+                      ? 'bg-gray-300'
+                      : ''
+                  } flex items-center justify-between text-sm p-2 rounded-xl text-gray-700 hover:bg-gray-300 transition-all`}
+                >
+                  {category.name}
+                  <FaArrowLeft className="border border-gray-400 p-1 rounded-full" />
+                </Link>
+              </li>
+            ))}
           </ul>
         )}
       </div>
 
       {/* برندها */}
-      <FilterCheckbox
-        label="برندها"
-        values={brands}
-        selectedValues={selectedBrand}
-        handleChange={handleCheckboxChange}
-        type="brand"
-        sectionKey="brands"
-      />
-
-      {/* کشور تولیدکننده */}
-      <FilterCheckbox
-        label="کشور سازنده"
-        values={origins}
-        selectedValues={selectedOrigin}
-        handleChange={handleCheckboxChange}
-        type="origin"
-        sectionKey="origins"
-      />
+      {[
+        { key: 'selectedBrand', label: 'برندها', values: brands },
+        { key: 'selectedOrigin', label: 'کشور سازنده', values: origins },
+      ].map(({ key, label, values }) => (
+        <div key={key} className="mb-6">
+          <div
+            className="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-bg"
+            onClick={() => toggleSection(key)}
+          >
+            <h3 className="body-text">{label}</h3>
+            {isOpen[key] ? <FaChevronUp /> : <FaChevronDown />}
+          </div>
+          {isOpen[key] && (
+            <ul className="space-y-2 max-h-48 overflow-y-auto bg-bg p-4">
+              {values?.length > 0 ? (
+                values.map((value) => (
+                  <li key={value}>
+                    <div className="flex items-center gap-2">
+                      <input
+                        id={`${key}-checkbox-${value}`}
+                        type="checkbox"
+                        value={value}
+                        checked={tempFilters[key].includes(value)}
+                        onChange={(e) => handleCheckboxChange(e, key)}
+                        className="cursor-pointer w-4 h-4 accent-primary"
+                      />
+                      <label
+                        htmlFor={`${key}-checkbox-${value}`}
+                        className="text-sm cursor-pointer"
+                      >
+                        {value}
+                      </label>
+                    </div>
+                  </li>
+                ))
+              ) : (
+                <p className="text-sm text-gray-500">داده‌ای یافت نشد</p>
+              )}
+            </ul>
+          )}
+        </div>
+      ))}
 
       {/* محدوده قیمت */}
       <div>
         <div
-          className={`flex items-center justify-between cursor-pointer p-2 rounded-lg bg-bg ${
-            isOpen.price ? 'rounded-b-none' : ''
-          }`}
+          className="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-bg"
           onClick={() => toggleSection('price')}
         >
-          <h1 className="body-text">محدوده قیمت</h1>
+          <h3 className="body-text">محدوده قیمت</h3>
           {isOpen.price ? <FaChevronUp /> : <FaChevronDown />}
         </div>
         {isOpen.price && (
           <Box sx={{ width: '100%' }} className="bg-bg mx-auto p-6 w-full">
             <Slider
-              value={priceRange}
+              value={tempFilters.priceRange}
               onChange={handleSliderChange}
-              min={0}
-              max={7500000}
+              min={priceMin}
+              max={priceMax}
               step={1000}
               sx={{ color: '#5B52A3' }}
-              // className="mr-5 mt-4"
             />
+
             <div className="flex justify-between text-sm text-gray-500">
               <span className="font-semibold">
-                {priceRange[1].toLocaleString()} تومان
+                {tempFilters.priceRange[1].toLocaleString()} تومان
               </span>
               <span className="font-semibold">
-                {priceRange[0].toLocaleString()} تومان
+                {tempFilters.priceRange[0].toLocaleString()} تومان
               </span>
             </div>
           </Box>

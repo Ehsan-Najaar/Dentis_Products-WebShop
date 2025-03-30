@@ -94,7 +94,7 @@ export default function MostViewedProducts() {
           updateSwiperState(swiper)
         }}
         onSlideChange={updateSwiperState}
-        className="lg:w-2/3 w-full h-72 lg:h-auto"
+        className="lg:w-2/3 w-full h-80 lg:h-auto"
         loop={false}
         autoplay={{
           delay: 3500,
@@ -104,8 +104,8 @@ export default function MostViewedProducts() {
         spaceBetween={16}
         breakpoints={{
           0: { slidesPerView: 2.1, spaceBetween: 20 },
-          480: { slidesPerView: 2.2, spaceBetween: 24 },
-          768: { slidesPerView: 3, spaceBetween: 30 },
+          480: { slidesPerView: 3.5, spaceBetween: 24 },
+          768: { slidesPerView: 2.2, spaceBetween: 30 },
           1024: { slidesPerView: 2.4, spaceBetween: 40 },
           1440: { slidesPerView: 3, spaceBetween: 16 },
         }}

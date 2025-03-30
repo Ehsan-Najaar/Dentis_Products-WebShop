@@ -100,7 +100,7 @@ const CategoriesAndProducts = () => {
       </div>
 
       {/* نمایش اسکلتون در هنگام لودینگ */}
-      <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 lg:gap-6">
         {loading ? (
           Array.from({ length: 8 }).map((_, index) => (
             <ProductCardSkeleton key={index} />
@@ -109,9 +109,9 @@ const CategoriesAndProducts = () => {
           filteredProducts.map((product, index) => (
             <div
               key={product._id}
-              className={`${
+              className={`grid place-items-center ${
                 index === 0 || index === 1 ? 'mt-0' : 'mt-24 lg:mt-0'
-              } ${index === 2 ? 'md:mt-0' : ''}`}
+              } ${index === 2 ? 'sm:-mt-0 md:mt-24 lg:mt-0' : ''}`}
             >
               <ProductCard1 product={product} />
             </div>

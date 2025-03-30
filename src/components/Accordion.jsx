@@ -69,13 +69,13 @@ const FAQAccordion = () => {
             {/* پاسخ */}
             <div
               id={`answer-${index}`}
-              className={`flex items-start gap-3 p-6 body-text text-gray-500 pr-8 transition-all duration-300 ${
+              className={`flex lg:items-center gap-3 p-6 body-text text-gray-500 pr-8 transition-all duration-300 ${
                 activeIndex === index ? 'flex' : 'hidden'
               }`}
               aria-labelledby={`question-${index}`} // برای ارتباط پاسخ با سوال
             >
               {/* دایره توپر قبل از متن پاسخ */}
-              <div className="w-4 h-4 rounded-full bg-accent mt-2 shrink-0"></div>
+              <div className="w-4 h-4 rounded-full bg-accent mt-2 lg:mt-0 shrink-0"></div>
 
               <p>{faq.answer}</p>
             </div>

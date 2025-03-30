@@ -56,14 +56,14 @@ const ProductCard1 = ({ product }) => {
   }
 
   return (
-    <div className="flex flex-col items-center justify-between bg-light lg:rounded-2xl rounded-t-2xl w-40 h-40 lg:w-72 lg:h-80">
+    <div className="flex flex-col items-center justify-between bg-light md:rounded-2xl rounded-t-2xl w-40 h-40 md:w-72 md:h-80">
       <Link
         href={`/products/${generateSlug(product.name)}-${generateSlug(
           product.brand
         )}`}
         className="w-full"
       >
-        <figure className="w-full lg:h-48 h-32 flex items-center justify-center rounded-2xl overflow-hidden mt-6">
+        <figure className="w-full md:h-48 h-32 flex items-center justify-center rounded-2xl overflow-hidden mt-6">
           <Image
             src={product.images[0]}
             alt={product.name}
@@ -75,9 +75,9 @@ const ProductCard1 = ({ product }) => {
         </figure>
       </Link>
 
-      <div className="w-full flex flex-col lg:flex-row justify-between gap-2 lg:items-center bg-accent p-2 rounded-xl">
+      <div className="w-full flex flex-col md:flex-row justify-between gap-2 md:items-center bg-accent p-2 rounded-xl">
         <section className="space-y-2">
-          <h3 className="lg:body-text text-[14px] w-36 lg:max-w-[184px] truncate">
+          <h3 className="md:body-text text-[14px] w-36 md:max-w-[184px] truncate">
             <Link
               href={`/products/${generateSlug(product.name)}-${generateSlug(
                 product.brand
@@ -98,7 +98,7 @@ const ProductCard1 = ({ product }) => {
           <button
             aria-label={`افزودن ${product.name} به سبد خرید`}
             onClick={addToCart}
-            className="hidden lg:flex  items-center justify-center w-max p-2 bg-light rounded-full"
+            className="hidden md:flex  items-center justify-center w-max p-2 bg-light rounded-full"
             disabled={loading || inCart}
           >
             {/* اگر بارگذاری سبد خرید یا بارگذاری در حال انجام است، آیکون سبد خرید را نمایش می‌دهیم */}

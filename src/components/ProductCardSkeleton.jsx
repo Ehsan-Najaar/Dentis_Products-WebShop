@@ -1,6 +1,6 @@
 const ProductCardSkeleton = () => {
   return (
-    <div className="bg-light w-[160px] h-[240px] sm:w-[200px] sm:h-[240px] md:w-[240px] md:h-[280px] lg:w-[288px] lg:h-[320px] rounded-lg p-4 animate-pulse">
+    <div className="bg-light w-[160px] h-[240px] sm:w-[160px] sm:h-[240px] md:w-[240px] md:h-[280px] lg:w-[288px] lg:h-[320px] rounded-lg p-4 animate-pulse">
       <div className="w-full h-28 sm:h-32 md:h-40 lg:h-52 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] animate-[loading_1.5s_infinite_linear] rounded-md"></div>
       <div className="mt-4 space-y-3">
         <div className="h-3 bg-gradient-to-r from-gray-200 via-gray-300 to-gray-200 bg-[length:200%_100%] animate-[loading_1.5s_infinite_linear] rounded w-3/4"></div>

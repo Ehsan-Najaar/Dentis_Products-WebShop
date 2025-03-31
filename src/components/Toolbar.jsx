@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { FaChevronDown, FaSortAmountDown } from 'react-icons/fa'
 
-const Toolbar = ({ sortOptions, selectedSort, onSortChange }) => {
+const Toolbar = ({ sortOptions, selectedSort, onSortChange, products }) => {
   const [isSortMenuOpen, setIsSortMenuOpen] = useState(false)
 
   const toggleSortMenu = () => {
@@ -63,6 +63,8 @@ const Toolbar = ({ sortOptions, selectedSort, onSortChange }) => {
           ))}
         </div>
       </div>
+
+      <small className="text-gray-500">{products.length} محصول</small>
     </div>
   )
 }

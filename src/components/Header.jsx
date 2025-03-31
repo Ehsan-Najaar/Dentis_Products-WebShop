@@ -106,7 +106,7 @@ export default function Header() {
                     {categories.map((category) => (
                       <li key={category._id}>
                         <Link
-                          href={`/products?category=${generateSlug(
+                          href={`/products/category/${generateSlug(
                             category.name
                           )}`}
                           className="block px-4 py-2 hover:bg-gray-100 text-dark"

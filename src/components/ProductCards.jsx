@@ -8,9 +8,11 @@ import {
   FiShoppingCart,
   FiTrash2,
 } from 'react-icons/fi'
+import { useAppContext } from '../../context/AppContext'
 import { generateSlug } from '../../utils/slugify'
 
 const ProductCard1 = ({ product }) => {
+  const { showToast } = useAppContext()
   const [loading, setLoading] = useState(false)
   const [inCart, setInCart] = useState(false)
   const [cartLoading, setCartLoading] = useState(true)
@@ -24,8 +26,9 @@ const ProductCard1 = ({ product }) => {
 
         if (res.ok) {
           const isInCart = data.cart?.some(
-            (item) => item.productId._id === product._id
+            (item) => item.productId && item.productId._id === product._id
           )
+
           setInCart(isInCart)
         }
       } catch (error) {
@@ -49,8 +52,9 @@ const ProductCard1 = ({ product }) => {
     setLoading(false)
     if (res.ok) {
       setInCart(true)
-      alert('محصول به سبد خرید اضافه شد')
+      showToast('محصول به سبد خرید اضافه شد', 'success')
     } else {
+      showToast('خطا در افزودن محصول', 'error')
       alert(data.message || 'خطا در افزودن محصول')
     }
   }

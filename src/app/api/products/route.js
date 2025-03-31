@@ -5,7 +5,7 @@ import slugify from 'slugify'
 import connectDB from '../../../../lib/db'
 import Product from '../../../../models/Product'
 
-// 📌 دریافت محصولات با فیلتر و جستجو (GET)
+// 📌 دریافت محصولات با فیلتر، جستجو و مرتب‌سازی (GET)
 export async function GET(req) {
   try {
     await connectDB()
@@ -18,6 +18,7 @@ export async function GET(req) {
     const brands = searchParams.get('brands')?.split(',')
     const origins = searchParams.get('origins')?.split(',')
     const category = searchParams.get('category')
+    const sort = searchParams.get('sort') // مقدار مرتب‌سازی
 
     const filter = {}
 
@@ -43,7 +44,18 @@ export async function GET(req) {
       filter.category = category
     }
 
-    const products = await Product.find(filter)
+    // 📌 پردازش نوع مرتب‌سازی
+    let sortQuery = {}
+
+    if (sort === 'price-asc') {
+      sortQuery = { price: 1 } // ارزان‌ترین اول
+    } else if (sort === 'price-desc') {
+      sortQuery = { price: -1 } // گران‌ترین اول
+    } else if (sort === 'views-desc') {
+      sortQuery = { views: -1 } // بیشترین بازدید
+    }
+
+    const products = await Product.find(filter).sort(sortQuery) // اضافه کردن مرتب‌سازی
 
     return NextResponse.json(products, { status: 200 })
   } catch (error) {

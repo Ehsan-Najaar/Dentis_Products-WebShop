@@ -1,4 +1,5 @@
 'use client'
+
 import CartSummary from '@/components/CartSummary'
 import EmptyCart from '@/components/EmptyCart'
 import { Loader } from '@/components/Loader'
@@ -78,7 +79,8 @@ export default function CartPage() {
   }
 
   const total = cart.reduce(
-    (sum, item) => sum + item.productId.price * item.quantity,
+    (sum, item) =>
+      sum + (item.productId ? item.productId.price * item.quantity : 0),
     0
   )
 

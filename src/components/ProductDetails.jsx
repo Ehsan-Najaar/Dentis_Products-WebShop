@@ -11,6 +11,7 @@ import {
   FiPlus,
   FiShoppingCart,
 } from 'react-icons/fi'
+import { generateSlug } from '../../utils/slugify'
 
 export default function ProductDetails({
   product,
@@ -147,7 +148,9 @@ export default function ProductDetails({
               <FiChevronLeft />
               <li>
                 <Link
-                  href={`/store/${product?.category || 'default-category'}`}
+                  href={`/products/${
+                    generateSlug(categoryName) || 'default-category'
+                  }`}
                   className="hover:text-dark"
                 >
                   {categoryName || 'دسته‌بندی'}

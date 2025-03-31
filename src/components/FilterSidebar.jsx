@@ -2,10 +2,9 @@
 
 import Box from '@mui/material/Box'
 import Slider from '@mui/material/Slider'
-import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
-import { FaArrowLeft, FaChevronDown, FaChevronUp } from 'react-icons/fa'
+import { FaChevronDown, FaChevronUp } from 'react-icons/fa'
 
 export default function FilterSidebar({
   categories,
@@ -16,35 +15,25 @@ export default function FilterSidebar({
   filters = {},
   setFilters,
   onApplyFilters,
-  setFiltersOpen,
 }) {
   const pathname = usePathname()
   const [tempFilters, setTempFilters] = useState({
     priceRange: filters.priceRange || [priceMin, priceMax],
     selectedBrand: filters.selectedBrand || [],
     selectedOrigin: filters.selectedOrigin || [],
-    selectedCategory: filters.selectedCategory || '',
   })
-
-  const [categoryDetails, setCategoryDetails] = useState([])
   const [isOpen, setIsOpen] = useState({
-    categories: false,
     brands: false,
     origins: false,
     price: false,
   })
 
   useEffect(() => {
-    fetch('/api/categories')
-      .then((res) => res.json())
-      .then((data) => setCategoryDetails(data))
-      .catch((error) => console.error('خطا در دریافت دسته‌بندی‌ها', error))
-  }, [])
-
-  useEffect(() => {
-    const categorySlug = pathname.split('/').pop()
+    const categorySlug = decodeURIComponent(pathname.split('/').pop()).replace(
+      /-/g,
+      ' '
+    )
     const matchedCategory = categories.find((cat) => cat.slug === categorySlug)
-
     setTempFilters((prev) => ({
       ...prev,
       selectedCategory: matchedCategory?._id || '',
@@ -52,7 +41,7 @@ export default function FilterSidebar({
   }, [pathname, categories])
 
   const handleCheckboxChange = (e, type) => {
-    const value = e.target.value
+    const { value } = e.target
     setTempFilters((prev) => ({
       ...prev,
       [type]: prev[type].includes(value)
@@ -66,23 +55,19 @@ export default function FilterSidebar({
   }
 
   const clearFilters = () => {
-    setFilters({
+    const resetFilters = {
       priceRange: [priceMin, priceMax],
       selectedBrand: [],
       selectedOrigin: [],
       selectedCategory: '',
-    })
-    setTempFilters({
-      priceRange: [priceMin, priceMax],
-      selectedBrand: [],
-      selectedOrigin: [],
-      selectedCategory: '',
-    })
+    }
+    setFilters(resetFilters)
+    setTempFilters(resetFilters)
   }
 
   const applyFilters = () => {
     setFilters(tempFilters)
-    onApplyFilters && onApplyFilters(tempFilters)
+    onApplyFilters?.(tempFilters)
   }
 
   const toggleSection = (section) => {
@@ -94,7 +79,6 @@ export default function FilterSidebar({
       <h2 className="text-xl font-bold pb-2 border-b border-gray-400 mb-6">
         فیلترها
       </h2>
-
       <div className="flex justify-end gap-2 mb-6">
         <button
           onClick={clearFilters}
@@ -109,45 +93,15 @@ export default function FilterSidebar({
           اعمال فیلتر
         </button>
       </div>
-
-      {/* دسته‌بندی‌ها */}
-      <div className="mb-6">
-        <div
-          className="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-bg"
-          onClick={() => toggleSection('categories')}
-        >
-          <h3 className="body-text">دسته‌بندی‌ها</h3>
-          {isOpen.categories ? <FaChevronUp /> : <FaChevronDown />}
-        </div>
-        {isOpen.categories && (
-          <ul className="space-y-2 max-h-48 overflow-y-auto bg-bg p-4">
-            {categoryDetails.map((category) => (
-              <li key={category._id}>
-                <Link
-                  href={`/store/${category._id}`}
-                  className={`${
-                    tempFilters.selectedCategory === category._id
-                      ? 'bg-gray-300'
-                      : ''
-                  } flex items-center justify-between text-sm p-2 rounded-xl text-gray-700 hover:bg-gray-300 transition-all`}
-                >
-                  {category.name}
-                  <FaArrowLeft className="border border-gray-400 p-1 rounded-full" />
-                </Link>
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-
-      {/* برندها */}
       {[
         { key: 'selectedBrand', label: 'برندها', values: brands },
         { key: 'selectedOrigin', label: 'کشور سازنده', values: origins },
       ].map(({ key, label, values }) => (
         <div key={key} className="mb-6">
           <div
-            className="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-bg"
+            className={`flex items-center justify-between cursor-pointer p-2 rounded-lg bg-bg ${
+              isOpen ? 'rounded-b-none' : ''
+            }`}
             onClick={() => toggleSection(key)}
           >
             <h3 className="body-text">{label}</h3>
@@ -155,25 +109,23 @@ export default function FilterSidebar({
           </div>
           {isOpen[key] && (
             <ul className="space-y-2 max-h-48 overflow-y-auto bg-bg p-4">
-              {values?.length > 0 ? (
+              {values?.length ? (
                 values.map((value) => (
-                  <li key={value}>
-                    <div className="flex items-center gap-2">
-                      <input
-                        id={`${key}-checkbox-${value}`}
-                        type="checkbox"
-                        value={value}
-                        checked={tempFilters[key].includes(value)}
-                        onChange={(e) => handleCheckboxChange(e, key)}
-                        className="cursor-pointer w-4 h-4 accent-primary"
-                      />
-                      <label
-                        htmlFor={`${key}-checkbox-${value}`}
-                        className="text-sm cursor-pointer"
-                      >
-                        {value}
-                      </label>
-                    </div>
+                  <li key={value} className="flex items-center gap-2">
+                    <input
+                      id={`${key}-checkbox-${value}`}
+                      type="checkbox"
+                      value={value}
+                      checked={tempFilters[key].includes(value)}
+                      onChange={(e) => handleCheckboxChange(e, key)}
+                      className="cursor-pointer w-4 h-4 accent-primary"
+                    />
+                    <label
+                      htmlFor={`${key}-checkbox-${value}`}
+                      className="text-sm cursor-pointer"
+                    >
+                      {value}
+                    </label>
                   </li>
                 ))
               ) : (
@@ -183,11 +135,11 @@ export default function FilterSidebar({
           )}
         </div>
       ))}
-
-      {/* محدوده قیمت */}
       <div>
         <div
-          className="flex items-center justify-between cursor-pointer p-2 rounded-lg bg-bg"
+          className={`flex items-center justify-between cursor-pointer p-2 rounded-lg bg-bg ${
+            isOpen ? 'rounded-b-none' : ''
+          }`}
           onClick={() => toggleSection('price')}
         >
           <h3 className="body-text">محدوده قیمت</h3>
@@ -203,7 +155,6 @@ export default function FilterSidebar({
               step={1000}
               sx={{ color: '#5B52A3' }}
             />
-
             <div className="flex justify-between text-sm text-gray-500">
               <span className="font-semibold">
                 {tempFilters.priceRange[1].toLocaleString()} تومان

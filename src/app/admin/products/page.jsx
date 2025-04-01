@@ -25,7 +25,9 @@ export default function ProductsManagment() {
       setLoading(true)
       setError(null)
       try {
-        const res = await fetch('/api/products')
+        const sortQuery = getSortQuery(sortOrder) // استفاده از تابع برای گرفتن نوع مرتب‌سازی
+        console.log(`Fetching products with sort: ${sortQuery}`) // بررسی خروجی
+        const res = await fetch(`/api/products?sort=${sortQuery}`)
         const data = await res.json()
         setProducts(data)
       } catch (err) {
@@ -35,7 +37,7 @@ export default function ProductsManagment() {
       }
     }
     fetchProducts()
-  }, [])
+  }, [sortOrder]) // فقط زمانی که sortOrder تغییر کرد، این useEffect اجرا می‌شود.
 
   // دریافت لیست دسته‌بندی‌ها
   useEffect(() => {
@@ -50,6 +52,12 @@ export default function ProductsManagment() {
     }
     fetchCategories()
   }, [showToast])
+
+  const getSortQuery = (sortOrder) => {
+    if (sortOrder === 'price-asc') return 'price-asc'
+    if (sortOrder === 'price-desc') return 'price-desc'
+    return '' // مقدار پیش‌فرض برای وقتی که مرتب‌سازی وجود نداره.
+  }
 
   const handleDeleteProduct = async (id) => {
     if (!window.confirm('آیا از حذف این محصول مطمئن هستید؟')) return
@@ -79,7 +87,10 @@ export default function ProductsManagment() {
     .sort((a, b) => {
       if (sortOrder === 'asc') return a.price - b.price
       if (sortOrder === 'desc') return b.price - a.price
-      return new Date(b.createdAt) - new Date(a.createdAt)
+      if (sortOrder === 'default') {
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+      }
+      return 0
     })
 
   return (
@@ -146,12 +157,12 @@ export default function ProductsManagment() {
 
               <select
                 value={sortOrder}
-                onChange={(e) => setSortOrder(e.target.value)}
+                onChange={(e) => setSortOrder(e.target.value)} // تغییرات در sortOrder
                 className="w-full lg:w-52 bg-light p-4 rounded-lg"
               >
-                <option value="default">جدیدترین</option>
-                <option value="asc">ارزان‌ترین</option>
-                <option value="desc">گران‌ترین</option>
+                <option value="">مرتب سازی قیمت</option>
+                <option value="price-asc">ارزان‌ترین</option>
+                <option value="price-desc">گران‌ترین</option>
               </select>
 
               <select

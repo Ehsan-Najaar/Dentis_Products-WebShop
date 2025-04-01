@@ -1,3 +1,5 @@
+'use client'
+
 import jalaali from 'jalaali-js'
 import { useEffect, useState } from 'react'
 import { FaCrown, FaUser } from 'react-icons/fa'
@@ -5,14 +7,24 @@ import { FaCrown, FaUser } from 'react-icons/fa'
 export default function UserTable({ users, error, loading }) {
   const [userRoles, setUserRoles] = useState([])
   const [roleFilter, setRoleFilter] = useState('all') // نمایش همه کاربران پیش‌فرض
-  const [dateFilter, setDateFilter] = useState('desc') // پیش‌فرض: جدیدترین کاربران
+  const [dateFilter, setDateFilter] = useState('') // پیش‌فرض: جدیدترین کاربران
 
   useEffect(() => {
     if (users) {
-      // ادمین‌ها را بالای لیست نگه می‌دارد
-      const sortedUsers = [...users].sort((a, b) =>
-        a.role === 'admin' && b.role !== 'admin' ? -1 : 1
-      )
+      // مرتب کردن ابتدا بر اساس تاریخ عضویت (جدیدترین اول)
+      const sortedByDate = [...users].sort((a, b) => {
+        const dateA = new Date(a.createdAt).getTime()
+        const dateB = new Date(b.createdAt).getTime()
+        return dateB - dateA // جدیدترین بالا
+      })
+
+      // سپس مرتب کردن بر اساس نقش (ادمین‌ها بالا بمانند)
+      const sortedUsers = [...sortedByDate].sort((a, b) => {
+        if (a.role === 'admin' && b.role !== 'admin') return -1
+        if (b.role === 'admin' && a.role !== 'admin') return 1
+        return 0
+      })
+
       setUserRoles(sortedUsers)
     }
   }, [users])
@@ -52,10 +64,18 @@ export default function UserTable({ users, error, loading }) {
         user.role === (roleFilter === 'admin' ? 'admin' : 'customer')
     )
     .sort((a, b) => {
+      if (!dateFilter) return 0 // اگر کاربر فیلتری انتخاب نکرده، بدون تغییر بماند
       const dateA = new Date(a.createdAt).getTime()
       const dateB = new Date(b.createdAt).getTime()
       return dateFilter === 'asc' ? dateA - dateB : dateB - dateA
     })
+
+  // جدا کردن ادمین‌ها و کاربران عادی
+  const admins = filteredUsers.filter((user) => user.role === 'admin')
+  const customers = filteredUsers.filter((user) => user.role !== 'admin')
+
+  // ترکیب لیست با حفظ ترتیب تاریخ عضویت و نمایش ادمین‌ها در بالا
+  const finalUsers = [...admins, ...customers]
 
   return (
     <div className="space-y-6">
@@ -83,6 +103,7 @@ export default function UserTable({ users, error, loading }) {
             onChange={(e) => setDateFilter(e.target.value)}
             className="w-2/4 lg:w-[50%] rounded-md p-2 focus:outline-none cursor-pointer"
           >
+            <option value="">پیش‌فرض</option>
             <option value="desc">جدیدترین</option>
             <option value="asc">قدیمی‌ترین</option>
           </select>

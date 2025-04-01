@@ -51,18 +51,13 @@ export default function AdminProductsList({ products, onDelete }) {
     }
   }
 
-  // مرتب‌سازی محصولات بر اساس تاریخ ایجاد (جدیدترین در ابتدا)
-  const sortedProducts = [...products].sort(
-    (a, b) => new Date(b.createdAt) - new Date(a.createdAt)
-  )
-
   return (
     <div className="lg:h-[calc(100%-28%)] lg:max-h-[calc(100%-28%)] p-2 space-y-4 overflow-auto">
       {loading ? (
         <Loader />
-      ) : sortedProducts.length > 0 ? (
+      ) : products.length > 0 ? (
         <div className="grid gap-4">
-          {sortedProducts.map((product) => (
+          {products.map((product) => (
             <div
               key={product._id}
               className={`flex flex-col lg:flex-row items-start lg:items-center justify-between p-4 bg-light rounded-lg space-y-4 shadow ${

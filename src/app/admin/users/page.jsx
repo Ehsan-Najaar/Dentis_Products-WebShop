@@ -31,11 +31,22 @@ export default function Users() {
     fetchUsers()
   }, [])
 
-  const filteredUsers = users.filter(
-    (user) =>
-      user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      user.email.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  const filteredUsers = users
+    .filter(
+      (user) =>
+        user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+    .sort((a, b) => {
+      // مرتب کردن کاربرانی که role آنها "admin" است در بالای لیست
+      if (a.role === 'admin' && b.role !== 'admin') {
+        return -1
+      }
+      if (a.role !== 'admin' && b.role === 'admin') {
+        return 1
+      }
+      return 0
+    })
 
   return (
     <ProtectedRoute>

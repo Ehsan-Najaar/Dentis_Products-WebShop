@@ -19,6 +19,7 @@ export async function GET(req) {
     const origins = searchParams.get('origins')?.split(',')
     const category = searchParams.get('category')
     const sort = searchParams.get('sort') // مقدار مرتب‌سازی
+    console.log('🔍 مقدار مرتب‌سازی:', sort)
 
     const filter = {}
 
@@ -45,17 +46,14 @@ export async function GET(req) {
     }
 
     // 📌 پردازش نوع مرتب‌سازی
-    let sortQuery = {}
-
+    const sortQuery = {}
     if (sort === 'price-asc') {
-      sortQuery = { price: 1 } // ارزان‌ترین اول
+      sortQuery.price = 1
     } else if (sort === 'price-desc') {
-      sortQuery = { price: -1 } // گران‌ترین اول
-    } else if (sort === 'views-desc') {
-      sortQuery = { views: -1 } // بیشترین بازدید
+      sortQuery.price = -1
     }
-
-    const products = await Product.find(filter).sort(sortQuery) // اضافه کردن مرتب‌سازی
+    // درخواست MongoDB باید از این sortQuery استفاده کنه
+    const products = await Product.find(filter).sort(sortQuery)
 
     return NextResponse.json(products, { status: 200 })
   } catch (error) {

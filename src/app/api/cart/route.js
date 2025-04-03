@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { NextResponse } from 'next/server'
 import connectDB from '../../../../lib/db'
 import User from '../../../../models/User'
+import Product from '../../../../models/Product'
 
 export async function GET() {
   try {

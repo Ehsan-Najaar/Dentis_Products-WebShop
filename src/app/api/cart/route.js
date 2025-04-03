@@ -13,13 +13,14 @@ export async function GET() {
       return NextResponse.json({ message: 'Unauthorized' }, { status: 401 })
     }
 
-    const user = await User.findOne({ email: session.user.email }).populate(
-      'cart.productId'
-    )
+    const user = await User.findOne({ email: session.user.email })
 
     if (!user) {
       return NextResponse.json({ message: 'User not found' }, { status: 404 })
     }
+
+    // اضافه کردن populate برای دریافت اطلاعات محصولات
+    await user.populate('cart.productId')
 
     return NextResponse.json({ cart: user.cart })
   } catch (error) {

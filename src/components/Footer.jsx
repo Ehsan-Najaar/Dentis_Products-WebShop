@@ -76,7 +76,7 @@ export default function Footer() {
           <div className="space-y-2">
             {[
               { Icon: FiSmartphone, text: '+98 912 026 8538' },
-              { Icon: FiMail, text: 'Namiizady@gmail.com' },
+              { Icon: FiMail, text: 'info@bionam.ir' },
             ].map(({ Icon, text }, index) => (
               <div
                 key={index}

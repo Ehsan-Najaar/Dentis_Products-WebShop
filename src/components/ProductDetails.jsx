@@ -148,7 +148,7 @@ export default function ProductDetails({
               <FiChevronLeft />
               <li>
                 <Link
-                  href={`/products/${
+                  href={`/products/category/${
                     generateSlug(categoryName) || 'default-category'
                   }`}
                   className="hover:text-dark"

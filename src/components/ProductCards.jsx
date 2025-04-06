@@ -131,7 +131,9 @@ const ProductCard2 = ({ product, onUpdateQuantity, onRemove }) => {
         {/* بخش تصویر و جزئیات محصول */}
         <div className="flex items-center gap-4 sm:gap-6 w-full">
           <Link
-            href={`/product/${product.productId._id}`}
+            href={`/products/${generateSlug(
+              product.productId.name
+            )}-${generateSlug(product.productId.brand)}`}
             className="relative w-20 h-20 sm:w-32 sm:h-32 md:w-32 md:h-32"
           >
             <figure className="relative w-20 h-20 lg:w-32 lg:h-32 flex items-center justify-center rounded-2xl overflow-hidden">
@@ -148,7 +150,9 @@ const ProductCard2 = ({ product, onUpdateQuantity, onRemove }) => {
 
           <div className="flex flex-col lg:gap-4 justify-between w-full">
             <Link
-              href={`/category/${product.productId.category?._id}`}
+              href={`/products/${generateSlug(
+                product.productId.name
+              )}-${generateSlug(product.productId.brand)}`}
               className="block lg:w-64 text-sm sm:text-base font-semibold"
             >
               {product.productId.name}
